@@ -13,7 +13,7 @@
     <title>Core29</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="public/styles/main.css"/>
+    <link rel="stylesheet" href="styles/main.css"/>
     <link rel="icon" type="image" href="../../public/images/favicon.png">
 </head>
 <body>
@@ -24,7 +24,7 @@
     map-id="DEMO_MAP_ID"
     style="width: 350px;height: 500px"></gmp-map>
 
-<button onclick="centerOnUser()">Use My Location</button>
+<button id="locate-btn" onclick="centerOnUser()">Use My Location</button>
 
 <form action="/submit" method="POST" onsubmit="return validateSelection()">
 
@@ -59,3 +59,5 @@
 <script src="/scripts/validateSelection.js" defer></script>
 </body>
 </html>
+
+
