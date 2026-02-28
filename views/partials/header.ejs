@@ -1,12 +1,28 @@
-<nav>
-    <div>
-        <!--image link here-->
-    </div>
-    <div>
-        <ul>
-            <li>
-                
-            </li>
-        </ul>
-    </div>
-</nav>
+    <header class="topHeader">
+        <img class="logo" src="/images/Transparent%20Logo.png" alt="Core29 Logo">
+        <button class="hamburger" id="hamburger" aria-label="Open menu" aria-expanded="false">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+    </header>
+
+    <!-- optional side menu that toggles open/closed -->
+    <aside class="sideMenu" id="sideMenu" aria-hidden="true">
+        <nav class="sideMenuNav">
+            <div class="profile">
+                <a href="">
+                    <div class="prifilePic">
+                        <img src="images/man.png" alt="">
+                    </div>
+                    <h1><%= user.username %></h1>
+                </a>
+
+            </div>
+
+            <a href="/personalStats">Personal Stats</a>
+            <a href="/planRoute">Plan Route</a>
+            <a href="/leaderboard">Leaderboard</a>
+            <a id="logoutBtn">Logout</a>
+        </nav>
+    </aside>
