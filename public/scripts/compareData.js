@@ -23,4 +23,4 @@ function compareWithCar(journeyInput){
 const comparisonResults = transportLogs.map(compareWithCar);
 
 console.log("Comparison vs Driving Car:");
-console.log(comparisonResults);
+console.log(comparisonResults); 
