@@ -122,13 +122,12 @@ body {
 }
 
 .dashboard {
-    width: 100%;
+    /* width: 100vw; */
     min-height: calc(100vh - 80px);
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    padding: 20px;
 }
 
 .dashboard img {
