@@ -1,0 +1,29 @@
+{
+  "name": "rguhack26",
+  "version": "1.0.0",
+  "description": "",
+  "homepage": "https://github.com/ABZ-Digital-Group/rguHack26#readme",
+  "bugs": {
+    "url": "https://github.com/ABZ-Digital-Group/rguHack26/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ABZ-Digital-Group/rguHack26.git"
+  },
+  "license": "ISC",
+  "author": "ABZ DIGITAL GROUP",
+  "type": "commonjs",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "ejs": "^4.0.1",
+    "express": "^5.2.1",
+    "express-session": "^1.19.0",
+    "mongodb": "^7.1.0",
+    "mongodb-legacy": "^6.1.3"
+  }
+}
