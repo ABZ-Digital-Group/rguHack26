@@ -7,6 +7,8 @@
     defer
 </script>
 
+<script src="/scripts/centreOnUser.js"></script>
+
 <head>
     <title>Core29</title>
     <meta charset="UTF-8">
@@ -24,12 +26,36 @@
 
 <button onclick="centerOnUser()">Use My Location</button>
 
-<form action="/routeResult.ejs">
-  <label for="saddress">Starting address:</label>
-  <input type="text" id="startingAddress" name="startingAddress"><br><br>
-  <label for="daddress">Destination address:</label>
-  <input type="text" id="destinationAddress" name="destinationAddress"><br><br>
-  <input id = "submitButton"type="submit" value="Submit">
+<form action="/submit" method="POST" onsubmit="return validateSelection()">
+
+  <div class="image-button-group">
+
+    <input type="checkbox" id="walk" name="modes" value="walk" hidden>
+    <label for="walk" class="image-btn">
+      <img src="/images/walkingicon.png" alt="Walk">
+    </label>
+
+    <input type="checkbox" id="bike" name="modes" value="bike" hidden>
+    <label for="bike" class="image-btn">
+      <img src="/images/bikeicon.png" alt="Bike">
+    </label>
+
+    <input type="checkbox" id="bus" name="modes" value="bus" hidden>
+    <label for="bus" class="image-btn">
+      <img src="/images/busicon.png" alt="Bus">
+    </label>
+
+    <input type="checkbox" id="car" name="modes" value="car" hidden>
+    <label for="car" class="image-btn">
+      <img src="/images/caricon.png" alt="Car">
+    </label>
+
+  </div>
+
+  <br>
+  <button type="submit">Submit</button>
 </form>
+
+<script src="/scripts/validateSelection.js" defer></script>
 </body>
 </html>
