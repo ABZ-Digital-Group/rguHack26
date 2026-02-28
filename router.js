@@ -53,7 +53,9 @@ router.get('/personalStats', (req, res) => {
     if (!req.user) {
         return res.redirect('/login');
     }
-    return res.render('pages/personalStats.ejs');
+    return res.render('pages/personalStats.ejs', {
+        user: req.user
+    });
 });
 
 router.use(express.static('public'));
