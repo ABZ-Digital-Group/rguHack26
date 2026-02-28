@@ -1,42 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <title>Core29 - Dashboard</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/styles/main.css"/>
+    <link rel="stylesheet" href="/styles/main.css" />
     <link rel="icon" type="image" href="/images/favicon.png">
 </head>
-<body>
-    <header class="topHeader">
-        <img class="logo" src="/images/Transparent%20Logo.png" alt="Core29 Logo">
-        <button class="hamburger" id="hamburger" aria-label="Open menu" aria-expanded="false">
-            <span></span>
-            <span></span>
-            <span></span>
-        </button>
-    </header>
 
-    <!-- optional side menu that toggles open/closed -->
-    <aside class="sideMenu" id="sideMenu" aria-hidden="true">
-        <nav class="sideMenuNav">
-            <a href="/personalStats.ejs">Personal Stats</a>
-            <a href="/planRoute.ejs">Plan Route</a>
-            <a href="/leaderboard.ejs">Leaderboard</a>
-            <a href="/logout">Logout</a>
-        </nav>
-    </aside>
+<body>
+<%- include('../partials/header') %>
 
     <div class="dashboard">
         <!-- dashboard content -->
     </div>
 
-    <nav class="bttmNav">
-        <div class="nav-icon"><a href="/personalStats"><img src="/images/goal.svg" alt="Goals"></a></div>
-        <div class="nav-icon"><a href="/planRoute"><img src="/images/route.svg" alt="Route"></a></div>
-        <div class="nav-icon"><a href="/leaderboard"><img src="/images/leaderboard.svg" alt="Leaderboard"></a></div>
-    </nav>
+    <%- include('../partials/bottomNav') %>
 
     <script src="/scripts/header.js"></script>
 </body>
+
 </html>

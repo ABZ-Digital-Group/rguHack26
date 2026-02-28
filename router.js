@@ -26,7 +26,9 @@ router.get('/dashboard', (req, res) => {
     if (!req.user) {
         return res.redirect('/login');
     }
-    return res.render('pages/dashboard.ejs');
+    return res.render('pages/dashboard.ejs', { 
+        user: req.user 
+    });
 });
 
 router.get('/logout', (req, res) => {
