@@ -26,7 +26,19 @@ app.use(express.static('public'));
 app.use('/api', api_router);
 
 app.get('/', (req, res) => {
-    res.render('pages/index.ejs');
+    res.render('pages/login.ejs');
+});
+
+app.get('/login', (req, res) => {
+    res.render('pages/login.ejs');
+});
+
+app.get('/register', (req, res) => {
+    res.render('pages/register.ejs');
+});
+
+app.get('/logout', (req, res) => {
+    res.render('pages/logout.ejs');
 });
 
 app.listen(PORT, () => {
