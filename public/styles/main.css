@@ -330,3 +330,31 @@ input[type="checkbox"]:checked + .image-btn {
 .image-btn:hover {
   transform: scale(1.05);
 }
+
+.stats-container {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+    padding: 20px;
+}
+
+.stat-box {
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    margin: 10px;
+    text-align: center;
+    width: 200px;
+}
+
+.stat-box h3 {
+    margin: 0;
+    font-size: 1.2rem;
+}
+
+.stat-box p {
+    margin: 10px 0 0;
+    font-size: 1.5rem;
+    font-weight: bold;
+}
