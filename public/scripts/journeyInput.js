@@ -3,6 +3,8 @@ const transportLogs = [];
 
 // Get user input
 const method = prompt("Enter transport method: ");
+
+
 /*const distance = parseFloat(prompt("Enter distnace travelled in km: "));
 
 // Validate input
