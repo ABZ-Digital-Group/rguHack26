@@ -61,7 +61,8 @@ authRouter.post('/register', (req, res) => {
         bcrypt.hash(password, 10).then(hashedPassword => {
             const newUser = { username, password: hashedPassword };
             usersCollection.insertOne(newUser).then(result => {
-                const token = generateJwt(result.ops[0]);
+                let user = { _id: result.insertedId.toString(), username };
+                const token = generateJwt(user);
                 res.cookie('token', token, { httpOnly: true });
                 res.status(201).json({ message: 'User registered successfully' });
             }).catch(err => {
