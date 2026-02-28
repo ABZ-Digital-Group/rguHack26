@@ -49,7 +49,7 @@ document.getElementById('logoutBtn')?.addEventListener('click', function() {
     })
     .then(response => {
         if (response.ok) {
-            window.location.href = '/login';
+            window.location.href = '/';
         } else {
             console.error('Logout failed');
         }
