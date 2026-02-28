@@ -3,7 +3,7 @@ const transportLogs = [];
 
 // Get user input
 const method = prompt("Enter transport method: ");
-const distance = parseFloat(prompt("Enter distnace travelled in km: "));
+/*const distance = parseFloat(prompt("Enter distnace travelled in km: "));
 
 // Validate input
 if (method && !isNaN(distance) && distance > 0){
@@ -20,4 +20,5 @@ if (method && !isNaN(distance) && distance > 0){
 }
 else{
     console.log("Invalid input. please enter a valid travel method");
-}
+}*/
+
