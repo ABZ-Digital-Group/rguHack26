@@ -1,3 +1,12 @@
+body {
+    margin: 0;
+    width: 100%;
+    font-family: StockPlusFont, sans-serif;
+    height: 100vh;
+    background-color: #f8f9fa;
+    color: #212529;
+}
+
 .loginHero {
     width: 40%;
     height: 100%;
