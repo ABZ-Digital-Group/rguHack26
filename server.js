@@ -32,8 +32,3 @@ app.get('/', (req, res) => {
 app.listen(PORT, () => {
     console.log(`🚀 Server is running on http://localhost:${PORT}`)
 });
-
-
-app.get('/ping', (req, res) => {
-    res.send(`<h1>System Diagnostic</h1><p><b>DB Status:</b> ${connectionStatus}</p><p><b>DB Connected:</b> ${db !== null}</p><p><b>Error Details:</b> <span style="color:red">${connectionError || 'None'}</span></p>`);
-});
