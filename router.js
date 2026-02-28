@@ -23,6 +23,9 @@ router.get('/register', (req, res) => {
 });
 
 router.get('/dashboard', (req, res) => {
+    if (!req.user) {
+        return res.redirect('/login');
+    }
     return res.render('pages/dashboard.ejs');
 });
 
