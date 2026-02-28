@@ -57,10 +57,7 @@ app.use(express.urlencoded({ extended: true }));
 
 // RENDER PAGES
 app.get('/', (req, res) => res.render('pages/index'));
-app.get('/martial-arts', (req, res) => res.render('pages/martial-arts'));
-app.get('/performance', (req, res) => res.render('pages/performance'));
-app.get('/online-coaching', (req, res) => res.render('pages/online-coaching'));
-app.get('/contact', (req, res) => res.render('pages/contact'));
+
 
 // 3. FIXED DATABASE CONNECTION & SERVER START (Only one app.listen)
 async function connectDB() {
