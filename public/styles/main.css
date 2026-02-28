@@ -2,9 +2,10 @@ body {
     margin: 0;
     width: 100%;
     font-family: StockPlusFont, sans-serif;
-    height: 100vh;
+    min-height: 100vh;
     background-color: #f8f9fa;
     color: #212529;
+    padding-bottom: 80px;
 }
 
 .splash {
@@ -90,4 +91,32 @@ body {
     /*outline-color: #b28ee4;*/
     
     /* box-shadow:  20px 20px 60px #d9d9d9, -20px -20px 60px #ffffff; */
+}
+
+
+/*Container for buttons*/
+.button-container {
+  display: flex;
+  justify-content: center;
+  gap: 40px;            
+  position: fixed;
+  bottom: 30px;            
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* Buttons */
+.round-btn {
+  padding: 12px 24px;
+  border-radius: 30px;     /* makes them rounded */
+  border: none;
+  font-size: 14px;
+  cursor: pointer;
+  background-color: #4285F4;
+  color: white;
+  transition: 0.2s ease;
+}
+
+.round-btn:hover {
+  background-color: #3367d6;
 }
