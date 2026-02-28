@@ -19,11 +19,11 @@ function generateJwt(user) {
 
 function authenticateToken(req, res, next) {
     const token = req.cookies.token;
-    if (!token) return res.status(401).json({ message: 'Unauthorized' });
+    if (!token) return next();
     jwt.verify(token, jwtSecret, (err, user) => {
-        if (err) return res.status(403).json({ message: 'Forbidden' });
+        if (err) return next();
         req.user = user;
-        next();
+        return next();
     });
 }
 
@@ -113,4 +113,4 @@ authRouter.get('/me', (req, res) => {
     });
 });
 
-export default authRouter;
+export { authRouter, authenticateToken };
