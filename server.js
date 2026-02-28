@@ -1,78 +1,34 @@
-require('dotenv').config();
+import dotenv from 'dotenv';
+import express from 'express';
+import cookieParser from 'cookie-parser';
+import api_router from './api/router.js';
 
-// LOAD NPM PACKAGES
-const express = require('express');
-const session = require('express-session');
-const bodyParser = require('body-parser');
-const MongoClient = require('mongodb-legacy').MongoClient;
+import { client, db } from './database.js';
+
+client.connect().then(() => {
+    console.log('✅ Connected to MongoDB');
+}).catch(err => {
+    console.error('❌ Failed to connect to MongoDB', err);
+    process.exit(1);
+});
+
+dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-const dbname = 'transition';
 
-// --- 4. DATABASE CONNECTION ---
-let db = null;
-let connectionError = null;
-let connectionStatus = "Disconnected";
-
-// 🚀 Ready-First Strategy: Listen immediately to pass Hostinger health checks
-app.listen(PORT, () => {
-    console.log(`✅ StockPlus listening on Port: ${PORT}`);
-    connectDB();
-});
-
-async function connectDB() {
-    const fallbackURI = "mongodb+srv://stuartiek_db_user:Zwq6xp7NR3Ho2W1W@cluster0.blmfv8d.mongodb.net/stockplus?retryWrites=true&w=majority";
-    let url = process.env.MONGODB_URI || fallbackURI;
-
-    try {
-        connectionStatus = "Connecting...";
-        const client = new MongoClient(url, { 
-            connectTimeoutMS: 15000, 
-            serverSelectionTimeoutMS: 15000,
-            useNewUrlParser: true,
-            useUnifiedTopology: true
-        });
-        await client.connect();
-        db = client.db(dbname);
-        connectionError = null;
-        connectionStatus = "Connected";
-        console.log('✅ Connected Successfully to MongoDB Atlas');
-    } catch (err) {
-        connectionStatus = "Error";
-        connectionError = `Atlas Connection Failed: ${err.message}`;
-        console.error('❌ MongoDB Connection Error:', err.message);
-    }
-}
-// APP CONFIG
-app.use(session({ secret: 'example', resave: false, saveUninitialized: true }));
-app.use(express.static('public'));
 app.set('view engine', 'ejs');
-
-// MIDDLEWARE (Unified)
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
+app.use(express.static('public'));
+app.use('/api', api_router);
 
+app.get('/', (req, res) => {
+    res.render('pages/index.ejs');
+});
 
-// RENDER PAGES
-app.get('/', (req, res) => res.render('pages/index'));
-
-
-// 3. FIXED DATABASE CONNECTION & SERVER START (Only one app.listen)
-async function connectDB() {
-    try {
-        await client.connect();
-        db = client.db(dbname);
-        console.log('Connected Successfully to MongoDB');
-        
-        const PORT = process.env.PORT || 3200;
-        app.listen(PORT, () => {
-            console.log(`Server running at http://localhost:${PORT}`);
-        });
-    } catch (err) {
-        console.error('Database connection failed', err);
-    }
-}
-
-connectDB();
+app.listen(PORT, () => {
+    console.log(`🚀 Server is running on http://localhost:${PORT}`)
+});
