@@ -19,10 +19,10 @@ console.log(data);
 */
 
 async function getRoute() {
-  const apiKey = process.env.GOOGLE_MAPS_API_KEY;
+  const apiKey = process.env.apiKey;
 
   if (!apiKey) {
-    throw new Error("GOOGLE_MAPS_API_KEY is not set.");
+    throw new Error("api key is not set.");
   }
 
   const response = await fetch(
