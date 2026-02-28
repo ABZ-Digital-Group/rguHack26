@@ -218,6 +218,7 @@ body {
 }
 
 .dashboard {
+    padding-top: 56px;
     /* width: 100vw; */
     min-height: calc(100vh - 80px);
     /* display: flex;
