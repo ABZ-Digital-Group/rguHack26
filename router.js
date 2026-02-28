@@ -33,6 +33,27 @@ router.get('/logout', (req, res) => {
     return res.render('pages/logout.ejs');
 });
 
+router.get('/leaderboard', (req, res) => {
+    if (!req.user) {
+        return res.redirect('/login');
+    }
+    return res.render('pages/leaderboard.ejs');
+});
+
+router.get('/planRoute', (req, res) => {
+    if (!req.user) {
+        return res.redirect('/login');
+    }
+    return res.render('pages/planRoute.ejs');
+});
+
+router.get('/personalStats', (req, res) => {
+    if (!req.user) {
+        return res.redirect('/login');
+    }
+    return res.render('pages/personalStats.ejs');
+});
+
 router.use(express.static('public'));
 
 export default router;
