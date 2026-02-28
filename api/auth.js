@@ -53,8 +53,7 @@ authRouter.post('/login', (req, res) => {
 
 authRouter.post('/register', (req, res) => {
     const { username, password } = req.body;
-
-    usersCollection.findOne({ username }).then(existingUser => {
+    usersCollection.findOne({ username: username }).then(existingUser => {
         if (existingUser) {
             res.status(400).json({ message: 'Username already exists' });
             return;
