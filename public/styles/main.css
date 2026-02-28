@@ -23,17 +23,18 @@ body {
   align-items: center;
 }
   
+.loginHero img {
+    width: 350px;
+    height: auto;
+}
+  
 .login {
     margin-left: 40%;
     height: 100%;
     background: #ffffff;
 }
-.loginLogo img{
-    width: 400px;
-    height: 200px;
-}
 
-.loginForm{
+.loginForm {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -41,35 +42,27 @@ body {
     height: 100%;
 }
 
-.loginForm form input[type=text]{
+.loginForm form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1em;
+}
+
+
+.loginForm form input[type=text],
+.loginForm form input[type=password] {
     margin-top: 20px;
     width: 200px;
-    font-size: 16px;
+    font-size: 1rem;
     padding: 15px;
-    border-radius: 40px;
-    
+    border-radius: 40px;  
     border: 1px solid #e0e0e0;
     background-color: #ffffff;
-    /*outline-color: #b28ee4;*/
-    
-    box-shadow:  20px 20px 60px #d9d9d9,
-             -20px -20px 60px #ffffff;
+    box-shadow: 20px 20px 60px #d9d9d9, -20px -20px 60px #ffffff;
 }
-.loginForm form input[type=password]{
-    margin-top: 20px;
-    width: 200px;
-    font-size: 16px;
-    padding: 15px;
-    border-radius: 40px;
-    
-    border: 1px solid #e0e0e0;
-    background-color: #ffffff;
-    /*outline-color: #b28ee4;*/
-    
-    box-shadow:  20px 20px 60px #d9d9d9,
-             -20px -20px 60px #ffffff;
-}
-.loginForm form input[type=button]{
+
+.loginForm form input[type=submit]{
     margin-top: 20px;
     width: 150px;
     font-size: 16px;
