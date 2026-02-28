@@ -10,7 +10,7 @@ router.get('/', (req, res) => {
     if (req.user) {
         return res.redirect('/dashboard');
     } else {
-        return res.redirect('/login');
+        return res.render('pages/splash.ejs');
     }
 });
 
