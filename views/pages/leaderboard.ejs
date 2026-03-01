@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <title>Transistion - Dashboard</title>
+    <title>Tra - Dashboard</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/styles/main.css" />
@@ -16,33 +16,85 @@
 
     <div class="dashboard">
         <div class="stats-container">
-            <div class="stat-box animate-fade-in">
-                <h3><%= user.username %></h3>
-                <p>Score: <%= typeof score !== 'undefined' ? score : 0 %></p>
-            </div>
-
-            <div class="stat-box animate-fade-in">
-                <h3>John Doe</h3>
-                <p>Score: 67</p>
-            </div>
-
-            <div class="stat-box animate-fade-in">
-                <h3>Austin Powers</h3>
-                <p>Score: 60</p>
-            </div>
-
-            <div class="stat-box animate-fade-in">
-                <h3>Sheldon Cooper</h3>
-                <p>Score: 55</p>
-            </div>
-
-            <div class="stat-box animate-fade-in">
-                <h3>Adam Sandler</h3>
-                <p>Score: 54</p>
-            </div>
-
         </div>
     </div>
+
+    <script>
+        async function fetchLeaderboard() {
+            try {
+                const response = await fetch('/api/journey/leaderboard');
+                const data = await response.json();
+                return data;
+            } catch (error) {
+                console.error('Error fetching leaderboard:', error);
+                return [];
+            }
+        }
+
+        function renderLeaderboard(leaderboard) {
+            const container = document.querySelector('.stats-container');
+            container.innerHTML = '<h2 class="leaderboard-title">Leaderboard</h2>';
+            const list = document.createElement('div');
+            list.className = 'leaderboard-list';
+            
+            leaderboard.forEach((entry, index) => {
+                const listItem = document.createElement('div');
+                listItem.className = 'leaderboard-item';
+                
+                // Add current user class
+                if (entry.you) {
+                    listItem.classList.add('current-user');
+                }
+                
+                // Add medal class for top 3
+                if (index === 0) listItem.classList.add('first-place');
+                if (index === 1) listItem.classList.add('second-place');
+                if (index === 2) listItem.classList.add('third-place');
+                
+                // Create rank element
+                const rank = document.createElement('div');
+                rank.className = 'rank';
+                if (index < 3) {
+                    const medals = ['🥇', '🥈', '🥉'];
+                    rank.innerHTML = `<span class="medal">${medals[index]}</span>`;
+                } else {
+                    rank.textContent = index + 1;
+                }
+                
+                // Create user info element
+                const userInfo = document.createElement('div');
+                userInfo.className = 'user-info';
+                const username = document.createElement('div');
+                username.className = 'username';
+                username.textContent = entry.username;
+                if (entry.you) {
+                    const youBadge = document.createElement('span');
+                    youBadge.className = 'you-badge';
+                    youBadge.textContent = 'You';
+                    username.appendChild(youBadge);
+                }
+                userInfo.appendChild(username);
+                
+                // Create score element
+                const score = document.createElement('div');
+                score.className = 'score';
+                score.innerHTML = `<span class="score-value">${entry.score}</span> <span class="score-label">pts</span>`;
+                
+                listItem.appendChild(rank);
+                listItem.appendChild(userInfo);
+                listItem.appendChild(score);
+                list.appendChild(listItem);
+            });
+            container.appendChild(list);
+        }
+
+        async function init() {
+            const leaderboard = await fetchLeaderboard();
+            renderLeaderboard(leaderboard);
+        }
+
+        init();
+    </script>
 
     <%- include('../partials/bottomNav') %>
 
