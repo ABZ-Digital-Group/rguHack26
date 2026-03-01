@@ -761,14 +761,10 @@ function displaySwitchPoints() {
     });
 }
 
-// Fetch API key and load Google Maps (no Places library needed)
 (async () => {
     try {
-        const response = await fetch('/api/routes/map/key');
-        const { apiKey } = await response.json();
-        
         const script = document.createElement('script');
-        script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=geometry&callback=initMap&v=weekly`;
+        script.src = `/api/routes/map/script`;
         script.async = true;
         script.defer = true;
         script.onerror = () => {
