@@ -10,6 +10,11 @@
     <%- include('../partials/header') %>
     <%- include('../partials/map') %>
 
+    <main class="plan-route">
+      <form id="route-form" onsubmit="return handleStartJourney(event)">
+        <div id="route-options" class="route-options">
+          <!-- Route options will be dynamically inserted here -->
+        </div>
         <div class="submit-container">
           <button type="submit" class="submit-btn" id="start-journey-btn">
             Start Journey
