@@ -1,4 +1,4 @@
-import transportLogs from "./journeyInput.js";
+import router from "../../router.js";
 
 class Achievement {
     constructor(id, achievementName, description, goal){
