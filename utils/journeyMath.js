@@ -8,8 +8,8 @@ const transportStats = {
     DRIVE: {co2: 0.21, calories: 0},
     BUS: {co2: 0.10, calories: 0},
     TRAIN: {co2: 0.05, calories: 0},
-    WALK: {co2: 0, calories: 60},
-    BICYCLE: {co2: 0, calories: 40},
+    WALK: {co2: 0.03, calories: 60},
+    BICYCLE: {co2: 0.02, calories: 40},
 };
 
 function calculateValues(distance, mode) {
