@@ -63,6 +63,27 @@
             <%= stats && stats.overall ? stats.overall.co2Saved.toFixed(2) :
             '0.00' %> kg
           </p>
+          <% if (stats && stats.overall && stats.overall.co2Saved > 0) { %>
+            <p class="comparison-text">
+              <% 
+                const co2 = stats.overall.co2Saved;
+                const treeDays = co2 / 0.0597;
+                const treeYears = co2 / 21.8;
+                let comparison = '';
+                if (treeYears >= 1) {
+                  const trees = treeYears.toFixed(1);
+                  comparison = `🌳 ${trees} tree${trees != 1 ? 's' : ''} for a year`;
+                } else if (treeDays >= 1) {
+                  const days = treeDays.toFixed(0);
+                  comparison = `🌳 1 tree for ${days} day${days != 1 ? 's' : ''}`;
+                } else {
+                  const hours = (treeDays * 24).toFixed(0);
+                  comparison = `🌳 1 tree for ${hours} hour${hours != 1 ? 's' : ''}`;
+                }
+              %>
+              (<%= comparison %>)
+            </p>
+          <% } %>
         </div>
         <div class="stat-box">
           <h3>Calories Burned</h3>
@@ -70,6 +91,28 @@
             <%= stats && stats.overall ? Math.round(stats.overall.totalCalories)
             : '0' %> kcal
           </p>
+          <% if (stats && stats.overall && stats.overall.totalCalories > 0) { %>
+            <p class="comparison-text">
+              <% 
+                const cals = stats.overall.totalCalories;
+                let comparison = '';
+                if (cals >= 285) {
+                  const count = (cals / 285).toFixed(1);
+                  comparison = `🍕 ${count} slice${count != 1 ? 's' : ''} of pizza`;
+                } else if (cals >= 230) {
+                  const count = (cals / 230).toFixed(1);
+                  comparison = `🍫 ${count} chocolate bar${count != 1 ? 's' : ''}`;
+                } else if (cals >= 105) {
+                  const count = (cals / 105).toFixed(1);
+                  comparison = `🍌 ${count} banana${count != 1 ? 's' : ''}`;
+                } else {
+                  const count = (cals / 95).toFixed(1);
+                  comparison = `🍎 ${count} apple${count != 1 ? 's' : ''}`;
+                }
+              %>
+              (<%= comparison %>)
+            </p>
+          <% } %>
         </div>
         <div class="stat-box">
           <h3>Distance Traveled</h3>
@@ -95,5 +138,13 @@
     <%- include('../partials/bottomNav') %>
 
     <script src="/scripts/header.js"></script>
+    <style>
+      .comparison-text {
+        font-size: 0.85em;
+        color: #666;
+        margin-top: 5px;
+        font-style: italic;
+      }
+    </style>
   </body>
 </html>

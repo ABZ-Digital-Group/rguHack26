@@ -353,6 +353,7 @@
                         <span id="calories">0</span>
                         <span class="stat-unit">kcal</span>
                     </div>
+                    <div class="stat-comparison" id="calories-comparison" style="font-size: 0.75em; color: #666; margin-top: 4px;"></div>
                 </div>
                 <div class="stat-box">
                     <div class="stat-label" id="co2-label">CO₂</div>
@@ -360,6 +361,7 @@
                         <span id="co2">0</span>
                         <span class="stat-unit">kg</span>
                     </div>
+                    <div class="stat-comparison" id="co2-comparison" style="font-size: 0.75em; color: #666; margin-top: 4px;"></div>
                 </div>
             </div>
 
@@ -441,20 +443,65 @@ function displayJourney(journey) {
     // Set stats
     document.getElementById('distance').textContent = journey.distanceKm || '0';
     document.getElementById('duration').textContent = journey.durationMin || '0';
-    document.getElementById('calories').textContent = Math.round(journey.calories) || '0';
+    
+    // Set calories with comparison
+    const calories = Math.round(journey.calories) || 0;
+    document.getElementById('calories').textContent = calories;
+    
+    // Add calorie comparison
+    const caloriesComparisonEl = document.getElementById('calories-comparison');
+    if (calories > 0) {
+        let calorieComparison = '';
+        if (calories >= 285) {
+            const count = (calories / 285).toFixed(1);
+            calorieComparison = `(🍕 ${count} slice${count != 1 ? 's' : ''} of pizza)`;
+        } else if (calories >= 230) {
+            const count = (calories / 230).toFixed(1);
+            calorieComparison = `(🍫 ${count} chocolate bar${count != 1 ? 's' : ''})`;
+        } else if (calories >= 105) {
+            const count = (calories / 105).toFixed(1);
+            calorieComparison = `(🍌 ${count} banana${count != 1 ? 's' : ''})`;
+        } else if (calories >= 95) {
+            const count = (calories / 95).toFixed(1);
+            calorieComparison = `(🍎 ${count} apple${count != 1 ? 's' : ''})`;
+        }
+        caloriesComparisonEl.textContent = calorieComparison;
+    }
     
     // Set CO2 stat based on mode
     const co2Label = document.getElementById('co2-label');
     const co2Value = document.getElementById('co2');
+    const co2ComparisonEl = document.getElementById('co2-comparison');
     
+    let co2Amount = 0;
     if (journey.mode === 'DRIVE') {
         // For driving, show wasted CO2 vs walking
         co2Label.textContent = 'CO₂ Wasted vs Walking';
-        co2Value.textContent = (journey.co2WastedVsWalking || 0).toFixed(2);
+        co2Amount = journey.co2WastedVsWalking || 0;
+        co2Value.textContent = co2Amount.toFixed(2);
     } else {
         // For non-driving modes, show saved CO2 vs driving
         co2Label.textContent = 'CO₂ Saved vs Driving';
-        co2Value.textContent = (journey.co2SavedVsDriving || 0).toFixed(2);
+        co2Amount = journey.co2SavedVsDriving || 0;
+        co2Value.textContent = co2Amount.toFixed(2);
+    }
+    
+    // Add CO2 comparison
+    if (co2Amount > 0) {
+        const treeDays = co2Amount / 0.0597;
+        const treeYears = co2Amount / 21.8;
+        let co2Comparison = '';
+        if (treeYears >= 1) {
+            const trees = treeYears.toFixed(1);
+            co2Comparison = `(🌳 ${trees} tree${trees != 1 ? 's' : ''} for a year)`;
+        } else if (treeDays >= 1) {
+            const days = treeDays.toFixed(0);
+            co2Comparison = `(🌳 1 tree for ${days} day${days != 1 ? 's' : ''})`;
+        } else if (treeDays > 0) {
+            const hours = (treeDays * 24).toFixed(0);
+            co2Comparison = `(🌳 1 tree for ${hours} hour${hours != 1 ? 's' : ''})`;
+        }
+        co2ComparisonEl.textContent = co2Comparison;
     }
     
     // Display comparisons

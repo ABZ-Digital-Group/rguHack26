@@ -704,6 +704,43 @@ function updateRouteOptions() {
         const isSuggested = !!suggestion;
         const suggestionReason = suggestion?.reason || '';
 
+        // Calculate comparisons
+        const calories = parseFloat(route.calories) || 0;
+        const co2 = parseFloat(route.co2) || 0;
+        
+        let calorieComparison = '';
+        if (calories > 0) {
+            if (calories >= 285) {
+                const count = (calories / 285).toFixed(1);
+                calorieComparison = ` (🍕 ${count} slice${count != 1 ? 's' : ''} of pizza)`;
+            } else if (calories >= 230) {
+                const count = (calories / 230).toFixed(1);
+                calorieComparison = ` (🍫 ${count} chocolate bar${count != 1 ? 's' : ''})`;
+            } else if (calories >= 105) {
+                const count = (calories / 105).toFixed(1);
+                calorieComparison = ` (🍌 ${count} banana${count != 1 ? 's' : ''})`;
+            } else if (calories >= 95) {
+                const count = (calories / 95).toFixed(1);
+                calorieComparison = ` (🍎 ${count} apple${count != 1 ? 's' : ''})`;
+            }
+        }
+        
+        let co2Comparison = '';
+        if (co2 > 0) {
+            const treeDays = co2 / 0.0597;
+            const treeYears = co2 / 21.8;
+            if (treeYears >= 1) {
+                const trees = treeYears.toFixed(1);
+                co2Comparison = ` (🌳 ${trees} tree${trees != 1 ? 's' : ''} for a year)`;
+            } else if (treeDays >= 1) {
+                const days = treeDays.toFixed(0);
+                co2Comparison = ` (🌳 1 tree for ${days} day${days != 1 ? 's' : ''})`;
+            } else if (treeDays > 0) {
+                const hours = (treeDays * 24).toFixed(0);
+                co2Comparison = ` (🌳 1 tree for ${hours} hour${hours != 1 ? 's' : ''})`;
+            }
+        }
+
         const row = document.createElement('div');
         row.className = 'route-option';
         row.style.borderLeft = `6px solid ${route.color}`;
@@ -728,11 +765,11 @@ function updateRouteOptions() {
                     </div>
                     <div class="stat">
                         <span class="stat-label">Calories</span>
-                        <span class="stat-value">${route.calories} kcal</span>
+                        <span class="stat-value">${route.calories} kcal${calorieComparison}</span>
                     </div>
                     <div class="stat">
                         <span class="stat-label">CO₂</span>
-                        <span class="stat-value">${route.co2} kg</span>
+                        <span class="stat-value">${route.co2} kg${co2Comparison}</span>
                     </div>
                 </div>
             </label>
