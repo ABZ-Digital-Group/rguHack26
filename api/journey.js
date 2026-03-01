@@ -2,6 +2,7 @@ import express from 'express';
 import { db } from '../database.js';
 import { ObjectId } from 'mongodb';
 import calculateUserStats from '../utils/userStats.js';
+import { checkAndGrantAchievements } from '../utils/achievements.js';
 
 const router = express.Router();
 
@@ -144,7 +145,18 @@ router.post('/complete/:journeyId', async (req, res) => {
             return res.status(404).json({ error: 'Journey not found or already completed' });
         }
 
-        res.json({ success: true });
+        let newAchievements = [];
+        try {
+            newAchievements = await checkAndGrantAchievements(req.user._id);
+        } catch (achievementError) {
+            console.error('Error checking achievements:', achievementError);
+            // Don't fail the completion if achievement check fails
+        }
+
+        res.json({ 
+            success: true,
+            newAchievements: newAchievements
+        });
 
     } catch (error) {
         console.error('Error completing journey:', error);
@@ -177,6 +189,18 @@ router.get('/stats', async (req, res) => {
     } catch (error) {
         console.error('Error fetching user stats:', error);
         res.status(500).json({ error: 'Failed to fetch user stats' });
+    }
+});
+
+router.get('/achievements', async (req, res) => {
+    try {
+        const { getUserAchievements } = await import('../utils/achievements.js');
+        const achievements = await getUserAchievements(req.user._id);
+        res.json(achievements);
+
+    } catch (error) {
+        console.error('Error fetching achievements:', error);
+        res.status(500).json({ error: 'Failed to fetch achievements' });
     }
 });
 

@@ -546,8 +546,16 @@ document.getElementById('complete-btn').addEventListener('click', async () => {
             throw new Error('Failed to complete journey');
         }
 
-        // Redirect to dashboard
-        window.location.href = '/dashboard';
+        const result = await response.json();
+
+        // Check if new achievements were unlocked
+        if (result.newAchievements && result.newAchievements.length > 0) {
+            // Redirect to achievements page with celebration
+            window.location.href = '/achievements?new=' + result.newAchievements.join(',');
+        } else {
+            // Redirect to dashboard
+            window.location.href = '/dashboard';
+        }
 
     } catch (error) {
         console.error('Error completing journey:', error);

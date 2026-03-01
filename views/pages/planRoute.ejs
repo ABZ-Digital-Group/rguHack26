@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="styles/main.css"/>
 </head>
 <body>
-
+<%- include('../partials/header') %>
 <%- include('../partials/map') %>
 
 <style>
@@ -221,6 +221,9 @@ async function handleStartJourney(event) {
     return false;
 }
 </script>
+
+<%- include('../partials/bottomNav') %>
+
 </body>
 </html>
 
