@@ -13,7 +13,7 @@
     <%- include('../partials/header') %>
 
     <script>
-        const score = calculateScoreFromCO2(journey);
+        const score = journey.co2SavedVsDriving * 10;
     </script>
 
     <div class="dashboard">
