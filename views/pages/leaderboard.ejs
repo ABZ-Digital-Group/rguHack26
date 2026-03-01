@@ -12,12 +12,16 @@
 <body>
     <%- include('../partials/header') %>
 
+    <script>
+        const score = calculateScoreFromCO2(co2SavedKG);
+    </script>
+
     <div class="dashboard">
         <div class="stats-container">
 
             <div class="stat-box animate-fade-in">
                 <h3><%=user.username %></h3>
-                <p>Score: <%=user.userScore %></p>
+                <p>Score: <%=score %></p>
             </div>
 
             <div class="stat-box animate-fade-in">
