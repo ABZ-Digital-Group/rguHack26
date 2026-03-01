@@ -46,7 +46,9 @@ router.get('/planRoute', (req, res) => {
     if (!req.user) {
         return res.redirect('/login');
     }
-    return res.render('pages/planRoute.ejs');
+    return res.render('pages/planRoute.ejs'), {
+        user: req.user
+    };
 });
 
 router.get('/personalStats', (req, res) => {

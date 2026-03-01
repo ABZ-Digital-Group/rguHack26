@@ -12,9 +12,27 @@
 <body>
 <%- include('../partials/header') %>
 
-    <div class="dashboard">
-        <!-- dashboard content -->
-    </div>
+
+
+     <div class="dashboard">
+
+        <h2 class="animate-fade-in">Welcome <%= user.username %></h2>
+
+            <div class="stats-container">
+                <div class="stat-box">
+                    <h3>Carbon Emissions</h3>
+                    <p>0 kg</p>
+                </div>
+                <div class="stat-box">
+                    <h3>Calories Burned</h3>
+                    <p>0 kcal</p>
+                </div>
+                <div class="stat-box">
+                    <h3>Distance Traveled</h3>
+                    <p>0 km</p>
+                </div>
+            </div>
+        </div>
 
     <%- include('../partials/bottomNav') %>
 

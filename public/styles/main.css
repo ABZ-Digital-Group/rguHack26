@@ -41,6 +41,7 @@ body {
     border-radius: 0 0 20px 20px;
     box-shadow: 0 2px 8px rgba(0,0,0,0.06); */
     z-index: 110;
+    animation: fadeIn 0.4s ease-out;
 }
 
 .topHeader .logo {
@@ -225,6 +226,10 @@ body {
     flex-direction: column;
     justify-content: center;
     align-items: center; */
+}
+.dashboard h2 {
+    font-size: 2rem;
+    margin-left: 20px;
 }
 
 .dashboard img {
@@ -441,3 +446,41 @@ button[type="submit"] {
 button[type="submit"]:hover {
     background-color: #0f9d58;
 }
+
+/* Animation for stat boxes */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-fade-in {
+    animation: fadeIn 0.5s ease-in-out forwards;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.welcome-message {
+    opacity: 0;
+    animation: slideDown 0.6s ease-out forwards;
+    animation-delay: 0.2s;
+}
+
+/* stagger delays for stat boxes */
+.stats-container .stat-box:nth-child(1) { animation-delay: 0.4s; }
+.stats-container .stat-box:nth-child(2) { animation-delay: 0.6s; }
+.stats-container .stat-box:nth-child(3) { animation-delay: 0.8s; }
