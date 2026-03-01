@@ -27,7 +27,7 @@ router.get('/dashboard', (req, res) => {
         return res.redirect('/login');
     }
     return res.render('pages/dashboard.ejs', { 
-        user: req.user 
+        user: req.user
     });
 });
 

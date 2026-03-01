@@ -1,0 +1,545 @@
+<style>
+.map-container {
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 10px;
+}
+
+.map-inputs {
+    background: #f5f5f5;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+}
+
+.input-group {
+    margin-bottom: 12px;
+}
+
+.input-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 600;
+    color: #333;
+    font-size: 14px;
+}
+
+.input-group input {
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+    border: 2px solid #ddd;
+    border-radius: 6px;
+    font-size: 14px;
+    transition: border-color 0.3s;
+}
+
+.input-group input:focus {
+    outline: none;
+    border-color: #4CAF50;
+}
+
+.center-btn {
+    width: 100%;
+    padding: 12px 16px;
+    background: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.center-btn:hover {
+    background: #45a049;
+}
+
+.center-btn:active {
+    background: #3d8b40;
+}
+
+#map {
+    width: 100%;
+    height: 400px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.error-message {
+    background: #f44336;
+    color: white;
+    padding: 12px 15px;
+    border-radius: 6px;
+    margin-bottom: 15px;
+    display: none;
+    font-size: 14px;
+    animation: slideDown 0.3s ease;
+}
+
+.error-message.show {
+    display: block;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.info-text {
+    font-size: 12px;
+    color: #666;
+    margin-top: 5px;
+    font-style: italic;
+}
+
+.autocomplete-dropdown {
+    position: absolute;
+    background: white;
+    border: 1px solid #ddd;
+    border-top: none;
+    border-radius: 0 0 6px 6px;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 1000;
+    display: none;
+    width: calc(100% - 2px);
+}
+
+.autocomplete-dropdown.show {
+    display: block;
+}
+
+.autocomplete-item {
+    padding: 10px;
+    cursor: pointer;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.autocomplete-item:hover {
+    background: #f5f5f5;
+}
+
+.autocomplete-item:last-child {
+    border-bottom: none;
+}
+
+.input-wrapper {
+    position: relative;
+}
+
+@media (min-width: 768px) {
+    #map {
+        height: 500px;
+    }
+    
+    .map-container {
+        padding: 20px;
+    }
+}
+
+@media (min-width: 1024px) {
+    #map {
+        height: 600px;
+    }
+}
+</style>
+
+<div class="map-container">
+    <div id="error-message" class="error-message"></div>
+    
+    <div class="map-inputs">
+        <div class="input-group">
+            <label for="start-address">Start Address:</label>
+            <div class="input-wrapper">
+                <input type="text" id="start-address" placeholder="Enter start address or click map" autocomplete="off">
+                <div id="start-dropdown" class="autocomplete-dropdown"></div>
+            </div>
+            <div class="info-text">Click map to drop pin A</div>
+        </div>
+        <div class="input-group">
+            <label for="end-address">End Address:</label>
+            <div class="input-wrapper">
+                <input type="text" id="end-address" placeholder="Enter end address or click map" autocomplete="off">
+                <div id="end-dropdown" class="autocomplete-dropdown"></div>
+            </div>
+            <div class="info-text">Click map to drop pin B</div>
+        </div>
+        <button id="center-location-btn" class="center-btn">📍 Center Map on My Location</button>
+    </div>
+
+    <div id="map"></div>
+</div>
+
+<script>
+let map;
+let startMarker = null;
+let endMarker = null;
+let geocoder;
+let clickMode = 'start'; // 'start' or 'end'
+let autocompleteTimeout = null;
+let routePolylines = []; // Store route polylines
+
+function showError(message) {
+    const errorDiv = document.getElementById('error-message');
+    errorDiv.textContent = message;
+    errorDiv.classList.add('show');
+    
+    setTimeout(() => {
+        errorDiv.classList.remove('show');
+    }, 5000);
+}
+
+// Decode Google polyline
+function decodePolyline(encoded) {
+    const poly = [];
+    let index = 0, len = encoded.length;
+    let lat = 0, lng = 0;
+
+    while (index < len) {
+        let b, shift = 0, result = 0;
+        do {
+            b = encoded.charCodeAt(index++) - 63;
+            result |= (b & 0x1f) << shift;
+            shift += 5;
+        } while (b >= 0x20);
+        const dlat = ((result & 1) ? ~(result >> 1) : (result >> 1));
+        lat += dlat;
+
+        shift = 0;
+        result = 0;
+        do {
+            b = encoded.charCodeAt(index++) - 63;
+            result |= (b & 0x1f) << shift;
+            shift += 5;
+        } while (b >= 0x20);
+        const dlng = ((result & 1) ? ~(result >> 1) : (result >> 1));
+        lng += dlng;
+
+        poly.push({ lat: lat / 1e5, lng: lng / 1e5 });
+    }
+    return poly;
+}
+
+// Check if both markers exist and fetch routes
+async function updateRoutes() {
+    if (!startMarker || !endMarker) {
+        return; // Need both markers to get routes
+    }
+
+    // Clear existing route polylines
+    routePolylines.forEach(polyline => polyline.setMap(null));
+    routePolylines = [];
+
+    const startPos = startMarker.getPosition();
+    const endPos = endMarker.getPosition();
+
+    try {
+        const response = await fetch('/api/routes/getRoute', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                start: {
+                    lat: startPos.lat(),
+                    lng: startPos.lng()
+                },
+                end: {
+                    lat: endPos.lat(),
+                    lng: endPos.lng()
+                }
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to fetch routes');
+        }
+
+        const data = await response.json();
+        
+        // Colors for different travel modes
+        const modeColors = {
+            'DRIVE': '#4285F4',      // Blue
+            'BICYCLE': '#34A853',    // Green
+            'WALK': '#FBBC04',       // Yellow
+            'TRANSIT': '#EA4335'     // Red
+        };
+
+        // Draw routes for each mode
+        Object.keys(data.routes || {}).forEach(mode => {
+            const routeData = data.routes[mode];
+            
+            if (routeData.data && routeData.data[0]?.polyline?.encodedPolyline) {
+                const encodedPolyline = routeData.data[0].polyline.encodedPolyline;
+                const path = decodePolyline(encodedPolyline);
+                
+                const polyline = new google.maps.Polyline({
+                    path: path,
+                    geodesic: true,
+                    strokeColor: modeColors[mode] || '#000000',
+                    strokeOpacity: 0.7,
+                    strokeWeight: 4,
+                    map: map
+                });
+
+                routePolylines.push(polyline);
+            }
+        });
+
+        // Fit map to show the route
+        const bounds = new google.maps.LatLngBounds();
+        bounds.extend(startPos);
+        bounds.extend(endPos);
+        map.fitBounds(bounds);
+
+    } catch (error) {
+        console.error('Error fetching routes:', error);
+        showError('Failed to fetch route information');
+    }
+}
+
+function setupAutocomplete(inputId, dropdownId, type) {
+    const input = document.getElementById(inputId);
+    const dropdown = document.getElementById(dropdownId);
+    
+    input.addEventListener('input', (e) => {
+        const value = e.target.value;
+        
+        if (value.length < 3) {
+            dropdown.classList.remove('show');
+            return;
+        }
+        
+        // Debounce API calls
+        clearTimeout(autocompleteTimeout);
+        autocompleteTimeout = setTimeout(async () => {
+            try {
+                const response = await fetch('/api/routes/map/autocomplete', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ input: value })
+                });
+                
+                if (!response.ok) throw new Error('Autocomplete failed');
+                
+                const data = await response.json();
+                displaySuggestions(data.suggestions || [], dropdown, type);
+            } catch (error) {
+                console.error('Autocomplete error:', error);
+            }
+        }, 300);
+    });
+    
+    // Close dropdown when clicking outside
+    document.addEventListener('click', (e) => {
+        if (!input.contains(e.target) && !dropdown.contains(e.target)) {
+            dropdown.classList.remove('show');
+        }
+    });
+}
+
+function displaySuggestions(suggestions, dropdown, type) {
+    if (!suggestions || suggestions.length === 0) {
+        dropdown.classList.remove('show');
+        return;
+    }
+    
+    dropdown.innerHTML = '';
+    
+    suggestions.forEach(suggestion => {
+        const item = document.createElement('div');
+        item.className = 'autocomplete-item';
+        item.textContent = suggestion.placePrediction?.text?.text || suggestion.text?.text || 'Unknown location';
+        
+        item.addEventListener('click', async () => {
+            const placeId = suggestion.placePrediction?.placeId || suggestion.placeId;
+            if (placeId) {
+                await selectPlace(placeId, type, item.textContent);
+                dropdown.classList.remove('show');
+            }
+        });
+        
+        dropdown.appendChild(item);
+    });
+    
+    dropdown.classList.add('show');
+}
+
+async function selectPlace(placeId, type, displayText) {
+    try {
+        const response = await fetch(`/api/routes/map/place/${placeId}`);
+        if (!response.ok) throw new Error('Failed to get place details');
+        
+        const place = await response.json();
+        
+        if (!place.location) {
+            showError('No location found for this place');
+            return;
+        }
+        
+        const position = {
+            lat: place.location.latitude,
+            lng: place.location.longitude
+        };
+        
+        const inputId = type === 'start' ? 'start-address' : 'end-address';
+        document.getElementById(inputId).value = displayText;
+        
+        if (type === 'start') {
+            if (startMarker) startMarker.setMap(null);
+            startMarker = new google.maps.Marker({
+                position: position,
+                map: map,
+                title: 'Start',
+                label: 'A',
+                animation: google.maps.Animation.DROP
+            });
+        } else {
+            if (endMarker) endMarker.setMap(null);
+            endMarker = new google.maps.Marker({
+                position: position,
+                map: map,
+                title: 'End',
+                label: 'B',
+                animation: google.maps.Animation.DROP
+            });
+        }
+        
+        map.setCenter(position);
+        map.setZoom(15);
+        
+        // Fetch and display routes if both markers are set
+        await updateRoutes();
+    } catch (error) {
+        console.error('Error selecting place:', error);
+        showError('Failed to load place details');
+    }
+}
+
+function initMap() {
+    // Robert Gordon University coordinates
+    const location = { lat: 57.1189, lng: -2.1380 };
+    
+    map = new google.maps.Map(document.getElementById('map'), {
+        zoom: 15,
+        center: location,
+        mapId: 'DEMO_MAP_ID'
+    });
+    
+    geocoder = new google.maps.Geocoder();
+    
+    // Setup custom autocomplete
+    setupAutocomplete('start-address', 'start-dropdown', 'start');
+    setupAutocomplete('end-address', 'end-dropdown', 'end');
+    
+    // Click listener to drop pins
+    map.addListener('click', async (event) => {
+        const position = event.latLng;
+        
+        if (clickMode === 'start') {
+            // Remove old start marker if exists
+            if (startMarker) startMarker.setMap(null);
+            
+            // Create new start marker (red/default)
+            startMarker = new google.maps.Marker({
+                position: position,
+                map: map,
+                title: 'Start',
+                label: 'A',
+                animation: google.maps.Animation.DROP
+            });
+            
+            // Reverse geocode to get address
+            geocodeLatLng(position, 'start-address');
+            
+            // Switch to end mode
+            clickMode = 'end';
+        } else {
+            // Remove old end marker if exists
+            if (endMarker) endMarker.setMap(null);
+            
+            // Create new end marker (blue)
+            endMarker = new google.maps.Marker({
+                position: position,
+                map: map,
+                title: 'End',
+                label: 'B',
+                animation: google.maps.Animation.DROP
+            });
+            
+            // Reverse geocode to get address
+            geocodeLatLng(position, 'end-address');
+            
+            // Switch back to start mode
+            clickMode = 'start';
+        }
+        
+        // Fetch and display routes if both markers are set
+        await updateRoutes();
+    });
+    
+    // Center on location button
+    document.getElementById('center-location-btn').addEventListener('click', () => {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    const pos = {
+                        lat: position.coords.latitude,
+                        lng: position.coords.longitude
+                    };
+                    map.setCenter(pos);
+                    map.setZoom(15);
+                },
+                () => {
+                    showError('Unable to get your location. Please check location permissions.');
+                }
+            );
+        } else {
+            showError('Your browser doesn\'t support geolocation.');
+        }
+    });
+}
+
+function geocodeLatLng(latLng, inputId) {
+    geocoder.geocode({ location: latLng }, (results, status) => {
+        if (status === 'OK') {
+            if (results[0]) {
+                document.getElementById(inputId).value = results[0].formatted_address;
+            }
+        } else {
+            showError('Could not get address for this location.');
+        }
+    });
+}
+
+// Fetch API key and load Google Maps (no Places library needed)
+(async () => {
+    try {
+        const response = await fetch('/api/routes/map/key');
+        const { apiKey } = await response.json();
+        
+        const script = document.createElement('script');
+        script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&callback=initMap&v=weekly`;
+        script.async = true;
+        script.defer = true;
+        script.onerror = () => {
+            showError('Failed to load Google Maps. Please refresh the page.');
+        };
+        document.head.appendChild(script);
+    } catch (error) {
+        console.error('Error loading map:', error);
+        showError('Error loading map configuration.');
+    }
+})();
+</script>

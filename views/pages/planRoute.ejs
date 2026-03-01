@@ -1,40 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<script>
- srcConcat="https://maps.googleapis.com/maps/api/js?key="+apiKey+"&libraries=maps,marker"
- src = srcConcat
-    defer
-</script>
-
-<script src="/scripts/centreOnUser.js"></script>
-
 <head>
-    <title>Transistion</title>
+    <title>Transition</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles/main.css"/>
-    <link rel="icon" type="image" href="../../public/images/favicon.png">
-
-    <script
-        src="https://maps.googleapis.com/maps/api/js?key=<%= apiKey %>&libraries=maps,marker"
-        defer>
-    </script>
-
-    <script src="/scripts/centreOnUser.js" defer></script>
-    <script src="/scripts/validateSelection.js" defer></script>
 </head>
 <body>
 
-
-
-<gmp-map
-    center="37.4220656,-122.0840897"
-    zoom="10"
-    map-id="DEMO_MAP_ID"
-    style="width: 350px;height: 500px"></gmp-map>
-
-<button id="locate-btn" onclick="centerOnUser()">Use My Location</button>
+<%- include('../partials/map') %>
 
 <form action="/submit" method="POST" onsubmit="return validateSelection()">
 
