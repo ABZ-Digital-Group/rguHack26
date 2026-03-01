@@ -15,8 +15,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles/main.css"/>
     <link rel="icon" type="image" href="../../public/images/favicon.png">
+
+    <script
+        src="https://maps.googleapis.com/maps/api/js?key=<%= apiKey %>&libraries=maps,marker"
+        defer>
+    </script>
+
+    <script src="/scripts/centreOnUser.js" defer></script>
+    <script src="/scripts/validateSelection.js" defer></script>
 </head>
 <body>
+
+
 
 <gmp-map
     center="37.4220656,-122.0840897"
@@ -56,7 +66,7 @@
   <button type="submit">Submit</button>
 </form>
 
-<script src="/scripts/validateSelection.js" defer></script>
+
 </body>
 </html>
 
