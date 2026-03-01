@@ -11,17 +11,14 @@
 
 <body>
     <%- include('../partials/header') %>
+    
 
-    <script>
-        const score = journey.co2SavedVsDriving * 10;
-    </script>
 
     <div class="dashboard">
         <div class="stats-container">
-
             <div class="stat-box animate-fade-in">
-                <h3><%=user.username %></h3>
-                <p>Score: <%=user.score %></p>
+                <h3><%= user.username %></h3>
+                <p>Score: <%= typeof score !== 'undefined' ? score : 0 %></p>
             </div>
 
             <div class="stat-box animate-fade-in">
