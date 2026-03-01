@@ -1,5 +1,4 @@
 import { db } from '../database.js';
-import { ObjectId } from 'mongodb';
 import calculateUserStats from './userStats.js';
 import { readFileSync } from 'fs';
 import { fileURLToPath } from 'url';
@@ -21,15 +20,15 @@ try {
 
 export async function checkAndGrantAchievements(userId) {
     try {
-        const userObjectId = typeof userId === 'string' ? new ObjectId(userId) : userId;
+        const userIdString = typeof userId === 'string' ? userId : userId.toString();
         
         const userAchievements = await db.collection('achievements').find({
-            userId: userObjectId
+            userId: userIdString
         }).toArray();
         
         const earnedAchievementIds = userAchievements.map(a => a.achievementId);
         
-        const stats = await calculateUserStats(userObjectId);
+        const stats = await calculateUserStats(userIdString);
         
         const nonDrivingTrips = stats.overall.tripCount - (stats.byMode.DRIVE?.tripCount || 0);
         
@@ -53,7 +52,7 @@ export async function checkAndGrantAchievements(userId) {
             
             if (currentValue >= requirement.value) {
                 await db.collection('achievements').insertOne({
-                    userId: userObjectId,
+                    userId: userIdString,
                     achievementId: achievement.id,
                     earnedAt: new Date()
                 });
@@ -72,10 +71,10 @@ export async function checkAndGrantAchievements(userId) {
 
 export async function getUserAchievements(userId) {
     try {
-        const userObjectId = typeof userId === 'string' ? new ObjectId(userId) : userId;
+        const userIdString = typeof userId === 'string' ? userId : userId.toString();
         
         const earnedAchievements = await db.collection('achievements').find({
-            userId: userObjectId
+            userId: userIdString
         }).toArray();
         
         const earnedMap = {};
@@ -83,7 +82,7 @@ export async function getUserAchievements(userId) {
             earnedMap[a.achievementId] = a.earnedAt;
         });
         
-        const stats = await calculateUserStats(userObjectId);
+        const stats = await calculateUserStats(userIdString);
         const nonDrivingTrips = stats.overall.tripCount - (stats.byMode.DRIVE?.tripCount || 0);
         
         const achievements = achievementsData.map(achievement => {

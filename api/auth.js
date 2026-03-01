@@ -2,6 +2,7 @@ import express from 'express';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
+import { ObjectId } from 'mongodb';
 
 import { client, db } from '../database.js';
 
@@ -44,7 +45,7 @@ authRouter.post('/login', (req, res) => {
                 res.status(400).json({ message: 'Invalid username or password' });
                 return;
             }
-            const token = generateJwt(user);
+            const token = generateJwt({ _id: user._id.toString(), username: user.username });
             res.cookie('token', token, { httpOnly: true });
             res.status(200).json({ message: 'Login successful' });
         }).catch(err => {
@@ -96,10 +97,10 @@ authRouter.get('/me', (req, res) => {
     }
     jwt.verify(token, jwtSecret, (err, user) => {
         if (err) {
-            res.status(403).json({ message: 'Forbidden' });
+            res.status(403).json({ message: 'Forbidden' }) ;
             return;
         }
-        usersCollection.findOne({ _id: new MongoClient.ObjectId(user._id) }).then(dbUser => {
+        usersCollection.findOne({ _id: new ObjectId(user.id) }).then(dbUser => {
             if (!dbUser) {
                 res.status(404).json({ message: 'User not found' });
                 return;
