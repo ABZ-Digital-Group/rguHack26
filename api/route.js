@@ -115,14 +115,24 @@ router.post('/getRoute', async (req, res) => {
     }
 });
 
-router.get('/map/key', (req, res) => {
+router.get('/map/script', (req, res) => {
     const apiKey = process.env.GOOGLE_MAPS_API_KEY;
 
-    if (!apiKey) {
-        return res.status(500).json({ error: 'API key not configured' });
-    }
-
-    res.json({ apiKey });
+    const response = fetch(`https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=geometry&callback=initMap&v=weekly)`)
+        .then(apiResponse => {
+            if (!apiResponse.ok) {
+                throw new Error('Failed to fetch Google Maps script');
+            }
+            return apiResponse.text();
+        })
+        .then(scriptContent => {
+            res.setHeader('Content-Type', 'application/javascript');
+            res.send(scriptContent);
+        })
+        .catch(error => {
+            console.error('Error fetching Google Maps script:', error);
+            res.status(500).json({ error: 'Failed to load Google Maps script' });
+        });
 });
 
 // New Places API - Autocomplete
