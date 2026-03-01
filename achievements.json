@@ -1,0 +1,211 @@
+[
+  {
+    "id": "first_steps",
+    "name": "First Steps",
+    "description": "Complete your first journey",
+    "icon": "🚶",
+    "requirement": {
+      "type": "tripCount",
+      "mode": "overall",
+      "value": 1
+    }
+  },
+  {
+    "id": "walker_beginner",
+    "name": "Walking Warrior",
+    "description": "Complete 10 walking trips",
+    "icon": "👟",
+    "requirement": {
+      "type": "tripCount",
+      "mode": "WALK",
+      "value": 10
+    }
+  },
+  {
+    "id": "walker_expert",
+    "name": "Walking Legend",
+    "description": "Complete 50 walking trips",
+    "icon": "🥾",
+    "requirement": {
+      "type": "tripCount",
+      "mode": "WALK",
+      "value": 50
+    }
+  },
+  {
+    "id": "cyclist_beginner",
+    "name": "Pedal Pusher",
+    "description": "Complete 10 bicycle trips",
+    "icon": "🚴",
+    "requirement": {
+      "type": "tripCount",
+      "mode": "BICYCLE",
+      "value": 10
+    }
+  },
+  {
+    "id": "cyclist_expert",
+    "name": "Cycling Champion",
+    "description": "Complete 50 bicycle trips",
+    "icon": "🚴‍♂️",
+    "requirement": {
+      "type": "tripCount",
+      "mode": "BICYCLE",
+      "value": 50
+    }
+  },
+  {
+    "id": "transit_user",
+    "name": "Public Transport Pro",
+    "description": "Complete 25 public transport trips",
+    "icon": "🚌",
+    "requirement": {
+      "type": "tripCount",
+      "mode": "BUS",
+      "value": 25
+    }
+  },
+  {
+    "id": "train_traveler",
+    "name": "Train Enthusiast",
+    "description": "Complete 25 train trips",
+    "icon": "🚆",
+    "requirement": {
+      "type": "tripCount",
+      "mode": "TRAIN",
+      "value": 25
+    }
+  },
+  {
+    "id": "eco_warrior",
+    "name": "Eco Warrior",
+    "description": "Save 10kg of CO2 emissions",
+    "icon": "🌱",
+    "requirement": {
+      "type": "co2Saved",
+      "mode": "overall",
+      "value": 10
+    }
+  },
+  {
+    "id": "eco_champion",
+    "name": "Eco Champion",
+    "description": "Save 50kg of CO2 emissions",
+    "icon": "🌍",
+    "requirement": {
+      "type": "co2Saved",
+      "mode": "overall",
+      "value": 50
+    }
+  },
+  {
+    "id": "eco_hero",
+    "name": "Eco Hero",
+    "description": "Save 100kg of CO2 emissions",
+    "icon": "🌳",
+    "requirement": {
+      "type": "co2Saved",
+      "mode": "overall",
+      "value": 100
+    }
+  },
+  {
+    "id": "fitness_starter",
+    "name": "Fitness Starter",
+    "description": "Burn 1000 calories",
+    "icon": "💪",
+    "requirement": {
+      "type": "totalCalories",
+      "mode": "overall",
+      "value": 1000
+    }
+  },
+  {
+    "id": "fitness_enthusiast",
+    "name": "Fitness Enthusiast",
+    "description": "Burn 5000 calories",
+    "icon": "🔥",
+    "requirement": {
+      "type": "totalCalories",
+      "mode": "overall",
+      "value": 5000
+    }
+  },
+  {
+    "id": "fitness_beast",
+    "name": "Fitness Beast",
+    "description": "Burn 10000 calories",
+    "icon": "💥",
+    "requirement": {
+      "type": "totalCalories",
+      "mode": "overall",
+      "value": 10000
+    }
+  },
+  {
+    "id": "distance_10k",
+    "name": "10K Traveler",
+    "description": "Travel a total of 10 kilometers",
+    "icon": "📍",
+    "requirement": {
+      "type": "totalDistance",
+      "mode": "overall",
+      "value": 10000
+    }
+  },
+  {
+    "id": "distance_50k",
+    "name": "50K Explorer",
+    "description": "Travel a total of 50 kilometers",
+    "icon": "🗺️",
+    "requirement": {
+      "type": "totalDistance",
+      "mode": "overall",
+      "value": 50000
+    }
+  },
+  {
+    "id": "distance_100k",
+    "name": "100K Adventurer",
+    "description": "Travel a total of 100 kilometers",
+    "icon": "🌏",
+    "requirement": {
+      "type": "totalDistance",
+      "mode": "overall",
+      "value": 100000
+    }
+  },
+  {
+    "id": "time_traveler",
+    "name": "Time Traveler",
+    "description": "Spend 10 hours traveling",
+    "icon": "⏱️",
+    "requirement": {
+      "type": "totalTime",
+      "mode": "overall",
+      "value": 36000
+    }
+  },
+  {
+    "id": "dedicated_commuter",
+    "name": "Dedicated Commuter",
+    "description": "Complete 100 trips total",
+    "icon": "🎯",
+    "requirement": {
+      "type": "tripCount",
+      "mode": "overall",
+      "value": 100
+    }
+  },
+  {
+    "id": "car_free",
+    "name": "Car-Free Champion",
+    "description": "Complete 30 non-driving trips",
+    "icon": "🚫🚗",
+    "requirement": {
+      "type": "nonDrivingTrips",
+      "mode": "overall",
+      "value": 30
+    }
+  }
+]
