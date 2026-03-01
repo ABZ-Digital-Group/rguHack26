@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function openMenu() {
         hamburger.classList.add('open');
+        hamburger.classList.add('hidden');
         hamburger.setAttribute('aria-expanded', 'true');
         sideMenu.classList.add('open');
         sideMenu.setAttribute('aria-hidden', 'false');
@@ -14,6 +15,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function closeMenu() {
         hamburger.classList.remove('open');
+        hamburger.classList.remove('hidden');
         hamburger.setAttribute('aria-expanded', 'false');
         sideMenu.classList.remove('open');
         sideMenu.setAttribute('aria-hidden', 'true');
