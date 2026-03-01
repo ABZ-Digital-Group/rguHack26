@@ -7,9 +7,14 @@
     <link rel="stylesheet" href="styles/main.css"/>
 </head>
 <body>
-<%- include('../partials/header') %>
-<%- include('../partials/map') %>
+    <%- include('../partials/header') %>
+    <%- include('../partials/map') %>
 
+    <main class="plan-route">
+      <form id="route-form" onsubmit="return handleStartJourney(event)">
+        <div id="route-options" class="route-options">
+          <!-- Route options will be dynamically inserted here -->
+        </div>
         <div class="submit-container">
           <button type="submit" class="submit-btn" id="start-journey-btn">
             Start Journey
@@ -17,6 +22,10 @@
         </div>
       </form>
     </main>
+
+    <%- include('../partials/bottomNav') %>
+
+  <script src="/scripts/header.js"></script>
 
     <script src="/scripts/validateSelection.js" defer></script>
     <script>
@@ -103,8 +112,6 @@
   return false;
 }
 </script>
-
-<%- include('../partials/bottomNav') %>
 
 </body>
 </html>
