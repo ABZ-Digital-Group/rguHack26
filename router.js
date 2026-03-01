@@ -2,6 +2,7 @@ import express from 'express';
 
 import api_router from './api/router.js';
 import { db } from './database.js';
+import calculateUserStats from './utils/userStats.js';
 
 const router = express.Router();
 
@@ -23,13 +24,24 @@ router.get('/register', (req, res) => {
     return res.render('pages/register.ejs');
 });
 
-router.get('/dashboard', (req, res) => {
+router.get('/dashboard', async (req, res) => {
     if (!req.user) {
         return res.redirect('/login');
     }
-    return res.render('pages/dashboard.ejs', { 
-        user: req.user
-    });
+    
+    try {
+        const stats = await calculateUserStats(req.user._id);
+        return res.render('pages/dashboard.ejs', { 
+            user: req.user,
+            stats: stats
+        });
+    } catch (error) {
+        console.error('Error fetching stats for dashboard:', error);
+        return res.render('pages/dashboard.ejs', { 
+            user: req.user,
+            stats: null
+        });
+    }
 });
 
 router.get('/logout', (req, res) => {

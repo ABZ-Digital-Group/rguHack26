@@ -20,16 +20,24 @@
 
             <div class="stats-container">
                 <div class="stat-box">
-                    <h3>Carbon Emissions</h3>
-                    <p>0 kg</p>
+                    <h3>CO2 Saved</h3>
+                    <p><%= stats && stats.overall ? stats.overall.co2Saved.toFixed(2) : '0.00' %> kg</p>
                 </div>
                 <div class="stat-box">
                     <h3>Calories Burned</h3>
-                    <p>0 kcal</p>
+                    <p><%= stats && stats.overall ? Math.round(stats.overall.totalCalories) : '0' %> kcal</p>
                 </div>
                 <div class="stat-box">
                     <h3>Distance Traveled</h3>
-                    <p>0 km</p>
+                    <p><%= stats && stats.overall ? (stats.overall.totalDistance / 1000).toFixed(2) : '0.00' %> km</p>
+                </div>
+                <div class="stat-box">
+                    <h3>Total Time</h3>
+                    <p><%= stats && stats.overall ? Math.round(stats.overall.totalTime / 60) : '0' %> min</p>
+                </div>
+                <div class="stat-box">
+                    <h3>Total Trips</h3>
+                    <p><%= stats && stats.overall ? stats.overall.tripCount : '0' %></p>
                 </div>
             </div>
         </div>

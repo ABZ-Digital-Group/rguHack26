@@ -1,6 +1,7 @@
 import express from 'express';
 import { db } from '../database.js';
 import { ObjectId } from 'mongodb';
+import calculateUserStats from '../utils/userStats.js';
 
 const router = express.Router();
 
@@ -164,6 +165,18 @@ router.get('/history', async (req, res) => {
     } catch (error) {
         console.error('Error fetching journey history:', error);
         res.status(500).json({ error: 'Failed to fetch journey history' });
+    }
+});
+
+// Get comprehensive stats for current user
+router.get('/stats', async (req, res) => {
+    try {
+        const stats = await calculateUserStats(req.user._id);
+        res.json(stats);
+
+    } catch (error) {
+        console.error('Error fetching user stats:', error);
+        res.status(500).json({ error: 'Failed to fetch user stats' });
     }
 });
 
