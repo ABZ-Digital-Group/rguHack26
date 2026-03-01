@@ -7,7 +7,7 @@ dotenv.config();
 
 const router = express.Router();
 
-router.use((resq, req, next) => {
+router.use((req, res, next) => {
     if (!req.user)
         return res.status(401).json({ error: 'Unauthorized' });
     next();
@@ -64,7 +64,7 @@ router.post('/getRoute', async (req, res) => {
                         'Content-Type': 'application/json',
                         'X-Goog-Api-Key': apiKey,
                         'X-Goog-FieldMask': 
-'routes.polyline.encodedPolyline,routes.staticDuration,routes.distanceMeters,routes.legs.steps'
+'routes.polyline.encodedPolyline,routes.staticDuration,routes.distanceMeters,routes.legs.steps.distanceMeters,routes.legs.steps.startLocation,routes.legs.steps.endLocation,routes.legs.steps.travelMode,routes.legs.steps.transitDetails,routes.legs.steps.navigationInstruction'
                     },
                     body: JSON.stringify(requestBody)
                 });
@@ -112,6 +112,88 @@ router.post('/getRoute', async (req, res) => {
     } catch (error) {
         console.error('Error in getRoute:', error);
         res.status(500).json({ error: error.message });
+    }
+});
+
+router.get('/map/key', (req, res) => {
+    const apiKey = process.env.GOOGLE_MAPS_API_KEY;
+
+    if (!apiKey) {
+        return res.status(500).json({ error: 'API key not configured' });
+    }
+
+    res.json({ apiKey });
+});
+
+// New Places API - Autocomplete
+router.post('/map/autocomplete', async (req, res) => {
+    const apiKey = process.env.GOOGLE_MAPS_API_KEY;
+
+    if (!apiKey) {
+        return res.status(500).json({ error: 'API key not configured' });
+    }
+
+    const { input } = req.body;
+
+    if (!input) {
+        return res.status(400).json({ error: 'Input required' });
+    }
+
+    try {
+        const response = await fetch('https://places.googleapis.com/v1/places:autocomplete', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Goog-Api-Key': apiKey
+            },
+            body: JSON.stringify({
+                input: input,
+                includedPrimaryTypes: ['street_address', 'route', 'premise', 'subpremise', 'point_of_interest'],
+                languageCode: 'en'
+            })
+        });
+
+        if (!response.ok) {
+            throw new Error('Autocomplete API request failed');
+        }
+
+        const data = await response.json();
+        res.json(data);
+    } catch (error) {
+        console.error('Error fetching autocomplete:', error);
+        res.status(500).json({ error: 'Failed to fetch suggestions' });
+    }
+});
+
+// New Places API - Place Details
+router.get('/map/place/:placeId', async (req, res) => {
+    const apiKey = process.env.GOOGLE_MAPS_API_KEY;
+
+    if (!apiKey) {
+        return res.status(500).json({ error: 'API key not configured' });
+    }
+
+    const { placeId } = req.params;
+
+    try {
+        const response = await fetch(`https://places.googleapis.com/v1/places/${placeId}`, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Goog-Api-Key': apiKey,
+                'X-Goog-FieldMask': 'id,displayName,formattedAddress,location'
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('Place details API request failed');
+        }
+
+        const data = await response.json();
+        res.json(data);
+    } catch (error) {
+        console.error('Error fetching place details:', error);
+        res.status(500).json({ error: 'Failed to fetch place details' });
     }
 });
 

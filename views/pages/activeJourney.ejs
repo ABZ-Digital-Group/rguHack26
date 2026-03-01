@@ -1,0 +1,565 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Active Journey - Transition</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles/main.css"/>
+    <style>
+        .journey-container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+
+        .journey-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .journey-header h1 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .journey-status {
+            display: inline-block;
+            padding: 8px 20px;
+            background: #4CAF50;
+            color: white;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .journey-card {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            padding: 30px;
+            margin-bottom: 20px;
+        }
+
+        .journey-mode {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .journey-mode-icon {
+            font-size: 48px;
+            margin-right: 20px;
+        }
+
+        .journey-mode-info h2 {
+            margin: 0 0 5px 0;
+            color: #333;
+        }
+
+        .journey-mode-info p {
+            margin: 0;
+            color: #666;
+            font-size: 14px;
+        }
+
+        .journey-addresses {
+            margin-bottom: 25px;
+        }
+
+        .address-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .address-icon {
+            font-size: 24px;
+            margin-right: 12px;
+            min-width: 30px;
+        }
+
+        .address-text {
+            flex: 1;
+        }
+
+        .address-label {
+            font-size: 12px;
+            color: #666;
+            text-transform: uppercase;
+            margin-bottom: 4px;
+        }
+
+        .address-value {
+            font-size: 16px;
+            color: #333;
+        }
+
+        .journey-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .stat-box {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #666;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+        }
+
+        .stat-value {
+            font-size: 28px;
+            font-weight: 700;
+            color: #333;
+        }
+
+        .stat-unit {
+            font-size: 14px;
+            color: #666;
+            margin-left: 4px;
+        }
+
+        .comparison-section {
+            margin-bottom: 25px;
+        }
+
+        .comparison-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 10px;
+        }
+
+        .comparison-item {
+            background: #f8f9fa;
+            padding: 12px 16px;
+            border-radius: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .comparison-mode {
+            font-size: 14px;
+            color: #666;
+        }
+
+        .comparison-values {
+            display: flex;
+            gap: 15px;
+        }
+
+        .comparison-value {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            font-size: 13px;
+        }
+
+        .comparison-value.positive {
+            color: #4CAF50;
+            font-weight: 600;
+        }
+
+        .comparison-value.negative {
+            color: #f44336;
+            font-weight: 600;
+        }
+
+        .comparison-value.neutral {
+            color: #666;
+        }
+
+        .complete-btn {
+            width: 100%;
+            padding: 18px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .complete-btn:hover {
+            background: #45a049;
+        }
+
+        .complete-btn:active {
+            background: #3d8b40;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+
+        .error {
+            text-align: center;
+            padding: 40px;
+            color: #f44336;
+        }
+
+        .no-journey {
+            text-align: center;
+            padding: 60px 20px;
+        }
+
+        .no-journey-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+        }
+
+        .no-journey h2 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .no-journey p {
+            color: #666;
+            margin-bottom: 30px;
+        }
+
+        .plan-route-btn {
+            display: inline-block;
+            padding: 14px 32px;
+            background: #4CAF50;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+
+        .plan-route-btn:hover {
+            background: #45a049;
+        }
+
+        @media (max-width: 600px) {
+            .journey-stats {
+                grid-template-columns: 1fr;
+            }
+
+            .journey-mode {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .journey-mode-icon {
+                margin-right: 0;
+                margin-bottom: 10px;
+            }
+            
+            .comparison-item {
+                flex-direction: column;
+                gap: 10px;
+                text-align: center;
+            }
+            
+            .comparison-values {
+                flex-direction: column;
+                gap: 8px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<%- include('../partials/header') %>
+
+<div class="journey-container">
+    <div id="loading" class="loading">
+        <h2>Loading your journey...</h2>
+    </div>
+
+    <div id="no-journey" class="no-journey" style="display: none;">
+        <div class="no-journey-icon">🗺️</div>
+        <h2>No Active Journey</h2>
+        <p>You don't have any journey in progress at the moment.</p>
+        <a href="/route" class="plan-route-btn">Plan a New Journey</a>
+    </div>
+
+    <div id="journey-content" style="display: none;">
+        <div class="journey-header">
+            <h1>Active Journey</h1>
+            <span class="journey-status">In Progress</span>
+        </div>
+
+        <div class="journey-card">
+            <div class="journey-mode">
+                <div class="journey-mode-icon" id="mode-icon">🚶</div>
+                <div class="journey-mode-info">
+                    <h2 id="mode-name">Walking</h2>
+                    <p id="started-time">Started just now</p>
+                </div>
+            </div>
+
+            <div class="journey-addresses">
+                <div class="address-item">
+                    <div class="address-icon">🅰️</div>
+                    <div class="address-text">
+                        <div class="address-label">From</div>
+                        <div class="address-value" id="start-address">Loading...</div>
+                    </div>
+                </div>
+                <div class="address-item">
+                    <div class="address-icon">🅱️</div>
+                    <div class="address-text">
+                        <div class="address-label">To</div>
+                        <div class="address-value" id="end-address">Loading...</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="journey-stats">
+                <div class="stat-box">
+                    <div class="stat-label">Distance</div>
+                    <div class="stat-value">
+                        <span id="distance">0</span>
+                        <span class="stat-unit">km</span>
+                    </div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Duration</div>
+                    <div class="stat-value">
+                        <span id="duration">0</span>
+                        <span class="stat-unit">min</span>
+                    </div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label">Calories</div>
+                    <div class="stat-value">
+                        <span id="calories">0</span>
+                        <span class="stat-unit">kcal</span>
+                    </div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-label" id="co2-label">CO₂</div>
+                    <div class="stat-value">
+                        <span id="co2">0</span>
+                        <span class="stat-unit">kg</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="comparison-section" id="comparison-section" style="display: none;">
+                <div class="comparison-title">🌍 Impact Comparison</div>
+                <div class="comparison-grid" id="comparison-grid">
+                    <!-- Comparisons will be populated by JavaScript -->
+                </div>
+            </div>
+
+            <button id="complete-btn" class="complete-btn">Complete Journey</button>
+        </div>
+    </div>
+</div>
+
+<%- include('../partials/bottomNav') %>
+
+<script>
+let activeJourney = null;
+
+const modeIcons = {
+    'DRIVE': '🚗',
+    'WALK': '🚶',
+    'TRANSIT': '🚌',
+    'BICYCLE': '🚴'
+};
+
+const modeNames = {
+    'DRIVE': 'Driving',
+    'WALK': 'Walking',
+    'TRANSIT': 'Public Transit',
+    'BICYCLE': 'Cycling'
+};
+
+async function loadActiveJourney() {
+    try {
+        const response = await fetch('/api/journey/active');
+        
+        if (!response.ok) {
+            if (response.status === 404) {
+                showNoJourney();
+                return;
+            }
+            throw new Error('Failed to load journey');
+        }
+
+        activeJourney = await response.json();
+        displayJourney(activeJourney);
+
+    } catch (error) {
+        console.error('Error loading journey:', error);
+        showNoJourney();
+    }
+}
+
+function showNoJourney() {
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('no-journey').style.display = 'block';
+    document.getElementById('journey-content').style.display = 'none';
+}
+
+function displayJourney(journey) {
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('journey-content').style.display = 'block';
+
+    // Set mode icon and name
+    document.getElementById('mode-icon').textContent = modeIcons[journey.mode] || '🚶';
+    document.getElementById('mode-name').textContent = modeNames[journey.mode] || journey.mode;
+
+    // Set started time
+    const startedAt = new Date(journey.startedAt);
+    const timeAgo = getTimeAgo(startedAt);
+    document.getElementById('started-time').textContent = `Started ${timeAgo}`;
+
+    // Set addresses
+    document.getElementById('start-address').textContent = journey.startAddress || 'Unknown location';
+    document.getElementById('end-address').textContent = journey.endAddress || 'Unknown location';
+
+    // Set stats
+    document.getElementById('distance').textContent = journey.distanceKm || '0';
+    document.getElementById('duration').textContent = journey.durationMin || '0';
+    document.getElementById('calories').textContent = Math.round(journey.calories) || '0';
+    
+    // Set CO2 stat based on mode
+    const co2Label = document.getElementById('co2-label');
+    const co2Value = document.getElementById('co2');
+    
+    if (journey.mode === 'DRIVE') {
+        // For driving, show wasted CO2 vs walking
+        co2Label.textContent = 'CO₂ Wasted vs Walking';
+        co2Value.textContent = (journey.co2WastedVsWalking || 0).toFixed(2);
+    } else {
+        // For non-driving modes, show saved CO2 vs driving
+        co2Label.textContent = 'CO₂ Saved vs Driving';
+        co2Value.textContent = (journey.co2SavedVsDriving || 0).toFixed(2);
+    }
+    
+    // Display comparisons
+    displayComparisons(journey);
+}
+
+function displayComparisons(journey) {
+    const comparisonSection = document.getElementById('comparison-section');
+    const comparisonGrid = document.getElementById('comparison-grid');
+    
+    if (!journey.caloriesVsOthers || !journey.co2VsOthers || 
+        Object.keys(journey.caloriesVsOthers).length === 0) {
+        comparisonSection.style.display = 'none';
+        return;
+    }
+    
+    comparisonSection.style.display = 'block';
+    comparisonGrid.innerHTML = '';
+    
+    const modes = Object.keys(journey.caloriesVsOthers);
+    
+    modes.forEach(mode => {
+        const caloriesDiff = journey.caloriesVsOthers[mode];
+        const co2Diff = journey.co2VsOthers[mode];
+        
+        const item = document.createElement('div');
+        item.className = 'comparison-item';
+        
+        const modeName = modeNames[mode] || mode;
+        const modeIcon = modeIcons[mode] || '🚗';
+        
+        // Format calories difference
+        let caloriesHTML = '';
+        if (Math.abs(caloriesDiff) < 1) {
+            caloriesHTML = `<span class="comparison-value neutral">~0 kcal</span>`;
+        } else if (caloriesDiff > 0) {
+            caloriesHTML = `<span class="comparison-value positive">+${Math.round(caloriesDiff)} kcal 💪</span>`;
+        } else {
+            caloriesHTML = `<span class="comparison-value negative">${Math.round(caloriesDiff)} kcal</span>`;
+        }
+        
+        // Format CO2 difference
+        let co2HTML = '';
+        if (Math.abs(co2Diff) < 0.01) {
+            co2HTML = `<span class="comparison-value neutral">~0 kg CO₂</span>`;
+        } else if (co2Diff > 0) {
+            co2HTML = `<span class="comparison-value positive">-${co2Diff.toFixed(2)} kg CO₂ 🌱</span>`;
+        } else {
+            co2HTML = `<span class="comparison-value negative">+${Math.abs(co2Diff).toFixed(2)} kg CO₂</span>`;
+        }
+        
+        item.innerHTML = `
+            <div class="comparison-mode">${modeIcon} vs ${modeName}</div>
+            <div class="comparison-values">
+                ${caloriesHTML}
+                ${co2HTML}
+            </div>
+        `;
+        
+        comparisonGrid.appendChild(item);
+    });
+}
+
+function getTimeAgo(date) {
+    const seconds = Math.floor((new Date() - date) / 1000);
+    
+    if (seconds < 60) return 'just now';
+    const minutes = Math.floor(seconds / 60);
+    if (minutes < 60) return `${minutes} minute${minutes > 1 ? 's' : ''} ago`;
+    const hours = Math.floor(minutes / 60);
+    if (hours < 24) return `${hours} hour${hours > 1 ? 's' : ''} ago`;
+    const days = Math.floor(hours / 24);
+    return `${days} day${days > 1 ? 's' : ''} ago`;
+}
+
+document.getElementById('complete-btn').addEventListener('click', async () => {
+    if (!activeJourney) return;
+
+    const btn = document.getElementById('complete-btn');
+    btn.disabled = true;
+    btn.textContent = 'Completing...';
+
+    try {
+        const response = await fetch(`/api/journey/complete/${activeJourney._id}`, {
+            method: 'POST'
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to complete journey');
+        }
+
+        // Redirect to dashboard
+        window.location.href = '/dashboard';
+
+    } catch (error) {
+        console.error('Error completing journey:', error);
+        alert('Failed to complete journey. Please try again.');
+        btn.disabled = false;
+        btn.textContent = 'Complete Journey';
+    }
+});
+
+// Load journey on page load
+loadActiveJourney();
+</script>
+
+</body>
+</html>

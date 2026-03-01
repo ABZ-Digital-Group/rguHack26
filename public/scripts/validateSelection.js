@@ -1,8 +1,7 @@
 function validateSelection() {
-  const checkboxes = document.querySelectorAll('input[name="modes"]');
-  const oneChecked = Array.from(checkboxes).some(cb => cb.checked);
-  if (!oneChecked) {
-    alert("Please select at least one mode of transport.");
+  const selectedMode = document.querySelector('input[name="selectedMode"]:checked');
+  if (!selectedMode) {
+    alert("Please select a route to complete your journey.");
     return false;
   }
   return true;

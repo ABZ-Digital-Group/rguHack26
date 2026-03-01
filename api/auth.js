@@ -22,7 +22,10 @@ function authenticateToken(req, res, next) {
     if (!token) return next();
     jwt.verify(token, jwtSecret, (err, user) => {
         if (err) return next();
-        req.user = user;
+        req.user = {
+            _id: user.id,
+            username: user.username
+        };
         return next();
     });
 }
