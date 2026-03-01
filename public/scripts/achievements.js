@@ -57,7 +57,16 @@ const fiveJourneysLogged = new Achievement(
 );
 
 
+const save20kgCO2 = new Achievement(
+    "save_20kg_co2",
+    "20kg CO2 saved",
+    "Save a total of 20kg of CO2",
+    20
+);
+
+
 export{
     burn1000Cal,
-    fiveJourneysLogged
+    fiveJourneysLogged,
+    save20kgCO2
 };
