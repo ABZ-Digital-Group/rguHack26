@@ -277,9 +277,13 @@ async function updateRoutes() {
         // Draw routes for each mode
         Object.keys(data.routes || {}).forEach(mode => {
             const routeData = data.routes[mode];
+
+            if (mode == "BICYCLE") {
+                return;
+            }
             
-            if (routeData.data && routeData.data[0]?.polyline?.encodedPolyline) {
-                const encodedPolyline = routeData.data[0].polyline.encodedPolyline;
+            if (routeData.polyline) {
+                const encodedPolyline = routeData.polyline;
                 const path = decodePolyline(encodedPolyline);
                 
                 const polyline = new google.maps.Polyline({
