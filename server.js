@@ -1,4 +1,5 @@
 import dotenv from 'dotenv';
+dotenv.config();
 import express from 'express';
 import cookieParser from 'cookie-parser';
 
@@ -13,7 +14,7 @@ client.connect().then(() => {
     process.exit(1);
 });
 
-dotenv.config();
+
 
 const app = express();
 const PORT = process.env.PORT || 3000;

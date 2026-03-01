@@ -1,13 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<script>
-const apiKey = process.env.apiKey;
- srcConcat="https://maps.googleapis.com/maps/api/js?key="+apiKey+"&libraries=maps,marker"
- src = srcConcat
-    defer
-</script>
-
 <script src="/scripts/centreOnUser.js"></script>
 
 <head>
@@ -18,7 +11,7 @@ const apiKey = process.env.apiKey;
     <link rel="icon" type="image" href="../../public/images/favicon.png">
 
     <script
-        src="https://maps.googleapis.com/maps/api/js?key=" + apiKey + "&libraries=maps,marker"
+        src="https://maps.googleapis.com/maps/api/js?key=<%= apiKey %>&libraries=maps,marker"
         defer>
     </script>
 
