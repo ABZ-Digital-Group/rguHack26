@@ -1,72 +1,116 @@
-import transportLogs from "./journeyInput.js";
-
-class Achievement {
-    constructor(id, achievementName, description, goal){
-        this.id = id;
-        this.achievementName = achievementName;
-        this.description = description;
-        this.goal = goal;
-        this.progress = 0;
-        this.unlocked = false;
-    }
-
-    addProgress(amount){
-        if(this.unlocked) return;
-
-        this.progress += amount;
-
-        if(this.progress >= this.goal){
-            this.progress = this.goal;
-            this.unlocked();
+// Load and display achievements
+async function loadAchievements() {
+    try {
+        const response = await fetch('/api/journey/achievements');
+        
+        if (!response.ok) {
+            throw new Error('Failed to fetch achievements');
         }
-    }
 
-    unlock(){
-        this.unlocked = true;
-        console.log(`Achievement Unlocked! : ${this.achievementName}`)
-    }
-    
-    
-    getStatus(){
-        return{
-            id: this.id,
-            achievementName: this.achievementName,
-            description: this.description,
-            progress: this.progress,
-            goal: this.goal,
-            unlocked: this.unlocked
-        };
+        const achievements = await response.json();
+        
+        displayAchievements(achievements);
+        
+    } catch (error) {
+        console.error('Error loading achievements:', error);
+        document.getElementById('loading').textContent = 'Failed to load achievements. Please try again later.';
     }
 }
 
-// 1000 calories achievement
-const burn1000Cal = new Achievement(
-    "1000calories",
-    "1000 Calories Burned",
-    "Burn a total of 1000 calories",
-    1000
-);
+function displayAchievements(achievements) {
+    const grid = document.getElementById('achievementsGrid');
+    const loading = document.getElementById('loading');
+    const summary = document.getElementById('summary');
+    
+    // Calculate summary stats
+    const earnedCount = achievements.filter(a => a.earned).length;
+    const totalCount = achievements.length;
+    const percentage = totalCount > 0 ? Math.round((earnedCount / totalCount) * 100) : 0;
+    
+    // Display summary
+    summary.innerHTML = `
+        <h2>Your Progress</h2>
+        <div class="summary-stats">
+            <div class="summary-stat">
+                <div class="number">${earnedCount}</div>
+                <div class="label">Earned</div>
+            </div>
+            <div class="summary-stat">
+                <div class="number">${totalCount}</div>
+                <div class="label">Total</div>
+            </div>
+            <div class="summary-stat">
+                <div class="number">${percentage}%</div>
+                <div class="label">Complete</div>
+            </div>
+        </div>
+    `;
+    
+    // Clear and populate grid
+    grid.innerHTML = '';
+    
+    achievements.forEach(achievement => {
+        const card = createAchievementCard(achievement);
+        grid.appendChild(card);
+    });
+    
+    // Show grid, hide loading
+    loading.style.display = 'none';
+    grid.style.display = 'grid';
+}
 
+function createAchievementCard(achievement) {
+    const card = document.createElement('div');
+    card.className = `achievement-card ${achievement.earned ? 'earned' : 'locked'}`;
+    
+    let progressHtml = '';
+    if (!achievement.earned) {
+        progressHtml = `
+            <div class="achievement-progress">
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: ${achievement.percentage}%"></div>
+                </div>
+                <div class="progress-text">${formatProgressValue(achievement.progress, achievement.requirement.type)} / ${formatProgressValue(achievement.target, achievement.requirement.type)}</div>
+            </div>
+        `;
+    } else {
+        const earnedDate = new Date(achievement.earnedAt);
+        const dateStr = earnedDate.toLocaleDateString('en-US', { 
+            year: 'numeric', 
+            month: 'short', 
+            day: 'numeric' 
+        });
+        progressHtml = `
+            <div class="earned-date">✓ Earned on ${dateStr}</div>
+        `;
+    }
+    
+    card.innerHTML = `
+        <div class="achievement-icon">${achievement.icon}</div>
+        <div class="achievement-name">${achievement.name}</div>
+        <div class="achievement-description">${achievement.description}</div>
+        ${progressHtml}
+    `;
+    
+    return card;
+}
 
+function formatProgressValue(value, type) {
+    switch(type) {
+        case 'co2Saved':
+            return value.toFixed(1) + 'kg';
+        case 'totalCalories':
+            return Math.round(value) + ' kcal';
+        case 'totalDistance':
+            return (value / 1000).toFixed(1) + 'km';
+        case 'totalTime':
+            return Math.round(value / 3600) + 'h';
+        case 'tripCount':
+        case 'nonDrivingTrips':
+        default:
+            return Math.round(value);
+    }
+}
 
-const fiveJourneysLogged = new Achievement(
-    "log_5_journeys",
-    "5 Journeys Logged",
-    "Log a total of 5 journeys",
-    5
-);
-
-
-const save20kgCO2 = new Achievement(
-    "save_20kg_co2",
-    "20kg CO2 saved",
-    "Save a total of 20kg of CO2",
-    20
-);
-
-
-export{
-    burn1000Cal,
-    fiveJourneysLogged,
-    save20kgCO2
-};
+// Load achievements when page loads
+document.addEventListener('DOMContentLoaded', loadAchievements);

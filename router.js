@@ -80,11 +80,12 @@ router.get('/route', (req, res) => {
     });
 });
 
-router.get('/personalStats', (req, res) => {
+
+router.get('/achievements', (req, res) => {
     if (!req.user) {
         return res.redirect('/login');
     }
-    return res.render('pages/personalStats.ejs', {
+    return res.render('pages/achievements.ejs', {
         user: req.user
     });
 });
