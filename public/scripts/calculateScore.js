@@ -1,6 +1,4 @@
-export function calculateScoreFromCO2(journey) {
-    // Define a scoring system based on CO2 saved
-    // For example, 1 point for every 0.1 kg of CO2 saved
-    const pointsPerKg = 10; // 10 points per kg of CO2 saved
-    return Math.round(journey.co2SavedVsDriving * pointsPerKg);
-}
+import { calculateScoreFromCO2 as calc } from '../../utils/calculateScore.js';
+
+// re-export for browser modules
+export const calculateScoreFromCO2 = calc;

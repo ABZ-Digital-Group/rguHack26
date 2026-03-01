@@ -3,6 +3,7 @@ import express from "express";
 import api_router from "./api/router.js";
 import { db } from "./database.js";
 import calculateUserStats from "./utils/userStats.js";
+import { calculateScoreFromCO2 } from './utils/calculateScore.js';
 
 const router = express.Router();
 
@@ -48,13 +49,33 @@ router.get("/logout", (req, res) => {
   return res.render("pages/logout.ejs");
 });
 
-router.get("/leaderboard", (req, res) => {
+router.get("/leaderboard", async (req, res) => {
   if (!req.user) {
     return res.redirect("/login");
   }
-  return res.render("pages/leaderboard.ejs", {
-    user: req.user,
-  });
+
+  try {
+    // fetch all completed journeys for the user and sum their scores
+    const journeys = await db.collection("journeys")
+      .find({ userId: req.user._id, status: "completed" })
+      .toArray();
+
+    const score = journeys.reduce((total, j) => {
+      return total + calculateScoreFromCO2(j);
+    }, 0);
+
+    // attach to user object or pass separately
+    return res.render("pages/leaderboard.ejs", {
+      user: req.user,
+      score,
+    });
+  } catch (err) {
+    console.error('Error building leaderboard data', err);
+    return res.render("pages/leaderboard.ejs", {
+      user: req.user,
+      score: 0,
+    });
+  }
 });
 
 router.get("/route", (req, res) => {
