@@ -92,6 +92,11 @@ main {
     opacity 0.25s ease;
 }
 
+/* hide hamburger when side menu is open */
+.hamburger.hidden {
+  display: none !important;
+}
+
 .hamburger.open span:nth-child(1) {
   transform: none;
 }
