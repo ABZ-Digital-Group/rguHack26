@@ -187,6 +187,8 @@ let geocoder;
 let clickMode = 'start'; // 'start' or 'end'
 let autocompleteTimeout = null;
 let routePolylines = []; // Store route polylines
+let routeData = {}; // Store route data for display
+let switchPointMarkers = []; // Store switch point markers
 
 function showError(message) {
     const errorDiv = document.getElementById('error-message');
@@ -229,6 +231,44 @@ function decodePolyline(encoded) {
     return poly;
 }
 
+// Count how many existing routes this path overlaps with
+function countOverlaps(newPath, existingPolylines) {
+    let overlapCount = 0;
+    
+    if (existingPolylines.length === 0) return 0;
+    
+    // Sample points from the new path
+    const sampleSize = Math.min(20, newPath.length);
+    const step = Math.max(1, Math.floor(newPath.length / sampleSize));
+    
+    for (const polyline of existingPolylines) {
+        let hasOverlap = false;
+        const path = polyline.getPath();
+        const pathArray = path.getArray();
+        
+        for (let i = 0; i < newPath.length && !hasOverlap; i += step) {
+            const point = newPath[i];
+            
+            for (let j = 0; j < pathArray.length; j++) {
+                const distance = google.maps.geometry.spherical.computeDistanceBetween(
+                    new google.maps.LatLng(point.lat, point.lng),
+                    pathArray[j]
+                );
+                
+                // If points are within 30 meters, consider it overlapping
+                if (distance < 8    ) {
+                    hasOverlap = true;
+                    break;
+                }
+            }
+        }
+        
+        if (hasOverlap) overlapCount++;
+    }
+    
+    return overlapCount;
+}
+
 // Check if both markers exist and fetch routes
 async function updateRoutes() {
     if (!startMarker || !endMarker) {
@@ -238,6 +278,10 @@ async function updateRoutes() {
     // Clear existing route polylines
     routePolylines.forEach(polyline => polyline.setMap(null));
     routePolylines = [];
+    
+    // Clear existing switch point markers
+    switchPointMarkers.forEach(marker => marker.setMap(null));
+    switchPointMarkers = [];
 
     const startPos = startMarker.getPosition();
     const endPos = endMarker.getPosition();
@@ -274,30 +318,85 @@ async function updateRoutes() {
             'TRANSIT': '#EA4335'     // Red
         };
 
+        // Clear previous route data
+        routeData = {};
+
+        // Define dashed line symbol
+        const dashedSymbol = {
+            path: 'M 0,-1 0,1',
+            strokeOpacity: 1,
+            scale: 4
+        };
+
         // Draw routes for each mode
         Object.keys(data.routes || {}).forEach(mode => {
-            const routeData = data.routes[mode];
-
-            if (mode == "BICYCLE") {
-                return;
-            }
+            const route = data.routes[mode];
             
-            if (routeData.polyline) {
-                const encodedPolyline = routeData.polyline;
+            if (route.polyline) {
+                const encodedPolyline = route.polyline;
                 const path = decodePolyline(encodedPolyline);
                 
-                const polyline = new google.maps.Polyline({
+                // Count how many routes this overlaps with
+                const overlapCount = countOverlaps(path, routePolylines);
+                
+                const polylineOptions = {
                     path: path,
                     geodesic: true,
                     strokeColor: modeColors[mode] || '#000000',
-                    strokeOpacity: 0.7,
-                    strokeWeight: 4,
+                    strokeWeight: 5,
                     map: map
-                });
+                };
+                
+                // If there's overlap, use staggered dashed pattern
+                if (overlapCount > 0) {
+                    polylineOptions.strokeOpacity = 0;
+                    // Different dash patterns based on overlap count
+                    const dashPatterns = [
+                        { repeat: '20px', offset: '0' },      // First overlap
+                        { repeat: '20px', offset: '10px' },   // Second overlap
+                        { repeat: '15px', offset: '5px' }     // Third overlap
+                    ];
+                    const pattern = dashPatterns[Math.min(overlapCount - 1, 2)];
+                    
+                    polylineOptions.icons = [{
+                        icon: {
+                            ...dashedSymbol,
+                            strokeColor: modeColors[mode] || '#000000'
+                        },
+                        offset: pattern.offset,
+                        repeat: pattern.repeat
+                    }];
+                } else {
+                    polylineOptions.strokeOpacity = 0.8;
+                }
+                
+                const polyline = new google.maps.Polyline(polylineOptions);
 
                 routePolylines.push(polyline);
+
+                // Use stats from API (already calculated by journeyMath.js)
+                const distanceKm = (route.distanceMeters / 1000).toFixed(1);
+                const durationMin = Math.round(route.durationSeconds / 60);
+
+                // Store route data (using values from backend)
+                routeData[mode] = {
+                    distance: route.distanceMeters,
+                    duration: route.durationSeconds,
+                    co2: route.co2Emissions.toFixed(2),
+                    calories: Math.round(route.caloriesBurned),
+                    color: modeColors[mode],
+                    distanceKm: distanceKm,
+                    durationMin: durationMin,
+                    switchPoints: route.switchPoints || []
+                };
             }
         });
+
+        // Update the route options display
+        updateRouteOptions();
+        
+        // Add switch point markers for TRANSIT routes
+        displaySwitchPoints();
 
         // Fit map to show the route
         const bounds = new google.maps.LatLngBounds();
@@ -527,6 +626,136 @@ function geocodeLatLng(latLng, inputId) {
     });
 }
 
+function updateRouteOptions() {
+    const container = document.getElementById('route-options');
+    if (!container) return;
+
+    container.innerHTML = '';
+
+    const modeLabels = {
+        'DRIVE': 'Car',
+        'WALK': 'Walk',
+        'TRANSIT': 'Transit',
+        'BICYCLE': 'Cycling'
+    };
+
+    const modeIcons = {
+        'DRIVE': '🚗',
+        'WALK': '🚶',
+        'TRANSIT': '🚌',
+        'BICYCLE': '🚴'
+    };
+
+
+    Object.keys(routeData).forEach(mode => {
+        const route = routeData[mode];
+        const label = modeLabels[mode] || mode;
+        const icon = modeIcons[mode] || '🚶';
+
+        const row = document.createElement('div');
+        row.className = 'route-option';
+        row.style.borderLeft = `6px solid ${route.color}`;
+        
+        row.innerHTML = `
+            <input type="radio" id="${mode}" name="selectedMode" value="${mode}" hidden>
+            <label for="${mode}" class="route-option-label">
+                <div class="route-header">
+                    <span class="route-icon">${icon}</span>
+                    <span class="route-mode">${label}</span>
+                </div>
+                <div class="route-stats">
+                    <div class="stat">
+                        <span class="stat-label">Distance</span>
+                        <span class="stat-value">${route.distanceKm} km</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-label">Time</span>
+                        <span class="stat-value">${route.durationMin} min</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-label">Calories</span>
+                        <span class="stat-value">${route.calories} kcal</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-label">CO₂</span>
+                        <span class="stat-value">${route.co2} kg</span>
+                    </div>
+                </div>
+            </label>
+        `;
+
+        container.appendChild(row);
+    });
+}
+
+function displaySwitchPoints() {
+    // Clear existing markers
+    switchPointMarkers.forEach(marker => marker.setMap(null));
+    switchPointMarkers = [];
+    
+    // Get mode change icons
+    const modeIcons = {
+        'WALK': '🚶',
+        'TRANSIT': '🚌',
+        'BUS': '🚌',
+        'TRAIN': '🚊',
+        'SUBWAY': '🚇',
+        'TRAM': '🚊',
+        'BICYCLE': '🚴',
+        'DRIVE': '🚗'
+    };
+    
+    // Add markers for each route's switch points
+    Object.keys(routeData).forEach(mode => {
+        const route = routeData[mode];
+        
+        if (route.switchPoints && route.switchPoints.length > 0) {
+            route.switchPoints.forEach((point, index) => {
+                const icon = modeIcons[point.mode] || modeIcons[point.travelMode] || '📍';
+                
+                // Create info window content
+                const infoContent = `
+                    <div style="padding: 8px; min-width: 150px;">
+                        <div style="font-weight: 600; margin-bottom: 4px; font-size: 14px;">
+                            ${icon} ${point.instruction}
+                        </div>
+                        <div style="font-size: 12px; color: #666;">
+                            Step ${index + 1}
+                        </div>
+                    </div>
+                `;
+                
+                const infoWindow = new google.maps.InfoWindow({
+                    content: infoContent
+                });
+                
+                // Create marker
+                const marker = new google.maps.Marker({
+                    position: point.location,
+                    map: map,
+                    icon: {
+                        path: google.maps.SymbolPath.CIRCLE,
+                        scale: 8,
+                        fillColor: route.color,
+                        fillOpacity: 0.9,
+                        strokeWeight: 2,
+                        strokeColor: '#ffffff'
+                    },
+                    title: point.instruction,
+                    zIndex: 1000
+                });
+                
+                // Add click event to show info
+                marker.addListener('click', () => {
+                    infoWindow.open(map, marker);
+                });
+                
+                switchPointMarkers.push(marker);
+            });
+        }
+    });
+}
+
 // Fetch API key and load Google Maps (no Places library needed)
 (async () => {
     try {
@@ -534,7 +763,7 @@ function geocodeLatLng(latLng, inputId) {
         const { apiKey } = await response.json();
         
         const script = document.createElement('script');
-        script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&callback=initMap&v=weekly`;
+        script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&libraries=geometry&callback=initMap&v=weekly`;
         script.async = true;
         script.defer = true;
         script.onerror = () => {

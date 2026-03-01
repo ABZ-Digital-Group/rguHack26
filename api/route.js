@@ -64,7 +64,7 @@ router.post('/getRoute', async (req, res) => {
                         'Content-Type': 'application/json',
                         'X-Goog-Api-Key': apiKey,
                         'X-Goog-FieldMask': 
-'routes.polyline.encodedPolyline,routes.staticDuration,routes.distanceMeters,routes.legs.steps'
+'routes.polyline.encodedPolyline,routes.staticDuration,routes.distanceMeters,routes.legs.steps.distanceMeters,routes.legs.steps.startLocation,routes.legs.steps.endLocation,routes.legs.steps.travelMode,routes.legs.steps.transitDetails,routes.legs.steps.navigationInstruction'
                     },
                     body: JSON.stringify(requestBody)
                 });

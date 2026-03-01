@@ -1,6 +1,7 @@
 import express from 'express';
 
 import api_router from './api/router.js';
+import { db } from './database.js';
 
 const router = express.Router();
 
@@ -45,13 +46,26 @@ router.get('/leaderboard', (req, res) => {
     );
 });
 
-router.get('/planRoute', (req, res) => {
+router.get('/route', (req, res) => {
     if (!req.user) {
         return res.redirect('/login');
     }
-    return res.render('pages/planRoute.ejs'), {
-        user: req.user
-    };
+    
+    db.collection('journeys').findOne({ userId: req.user._id, status: 'in-progress' }).then(activeJourney => {
+
+        if (activeJourney) {
+            return res.render('pages/activeJourney.ejs', {
+                user: req.user
+            });
+        } else {
+            return res.render('pages/planRoute.ejs', {
+                user: req.user
+            });
+        }
+    }).catch(err => {
+        console.error('Error fetching active journey', err);
+        return res.status(500).send('Internal server error');
+    });
 });
 
 router.get('/personalStats', (req, res) => {

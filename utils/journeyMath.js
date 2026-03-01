@@ -25,6 +25,8 @@ export default function calculateJourneyStats(journeyInput){
 
     let co2Emissions = 0;
     let caloriesBurned = 0;
+    const switchPoints = [];
+    
     if (journeyInput.mode != "TRANSIT") {
         const values = calculateValues(route.distanceMeters, journeyInput.mode);
         co2Emissions = values.co2Emissions;
@@ -32,25 +34,71 @@ export default function calculateJourneyStats(journeyInput){
     } else {
         co2Emissions = 0;
         caloriesBurned = 0;
-        route.legs.forEach(leg => {
-            leg.steps.forEach(step => {
-                let mode = step.travelMode;
-                if (mode === "TRANSIT") {
-                    mode = step.transitDetails.transitLine.vehicle.type;
+        if (route.legs && Array.isArray(route.legs)) {
+            route.legs.forEach(leg => {
+                if (leg.steps && Array.isArray(leg.steps)) {
+                    let previousMode = null;
+                    
+                    leg.steps.forEach((step, index) => {
+                        let mode = step.travelMode;
+                        let transitInfo = null;
+                        
+                        if (mode === "TRANSIT" && step.transitDetails) {
+                            mode = step.transitDetails.transitLine?.vehicle?.type || 'BUS';
+                            transitInfo = {
+                                vehicleType: step.transitDetails.transitLine?.vehicle?.type || 'BUS',
+                                lineName: step.transitDetails.transitLine?.name || 'Transit',
+                                headsign: step.transitDetails.headsign
+                            };
+                        }
+                        
+                        const distance = step.distanceMeters || 0;
+                        const values = calculateValues(distance, mode);
+                        console.log(`Step ${index} - Mode: ${mode}, Distance: ${distance}m, CO2: ${values.co2Emissions}kg, Calories: ${values.caloriesBurned}kcal`);
+                        co2Emissions += values.co2Emissions;
+                        caloriesBurned += values.caloriesBurned;
+                        
+                        if (step.startLocation && step.startLocation.latLng && previousMode !== null && previousMode !== step.travelMode) {
+                            switchPoints.push({
+                                location: {
+                                    lat: step.startLocation.latLng.latitude,
+                                    lng: step.startLocation.latLng.longitude
+                                },
+                                mode: mode,
+                                travelMode: step.travelMode,
+                                instruction: step.navigationInstruction?.instructions || getModeChangeText(step.travelMode, transitInfo),
+                                transitInfo: transitInfo,
+                                stepIndex: index
+                            });
+                        }
+                        
+                        previousMode = step.travelMode;
+                    });
                 }
-                const distance = step.distanceMeters;
-                const values = calculateValues(distance, mode);
-                co2Emissions += values.co2Emissions;
-                caloriesBurned += values.caloriesBurned;
             });
-        });
+        }
     }
 
     return {
         distanceMeters: route.distanceMeters,
-        durationSeconds: route.staticDuration,
+        durationSeconds: typeof route.staticDuration === 'string' 
+            ? parseInt(route.staticDuration.replace('s', ''))
+            : route.staticDuration,
         polyline: route.polyline.encodedPolyline,
         co2Emissions: co2Emissions,
-        caloriesBurned: caloriesBurned
+        caloriesBurned: caloriesBurned,
+        switchPoints: switchPoints
     }
+}
+
+function getModeChangeText(travelMode, transitInfo) {
+    if (travelMode === 'WALK') {
+        return 'Start walking';
+    } else if (travelMode === 'TRANSIT') {
+        if (transitInfo) {
+            return `Board ${transitInfo.lineName}`;
+        }
+        return 'Board transit';
+    }
+    return `Switch to ${travelMode.toLowerCase()}`;
 }
