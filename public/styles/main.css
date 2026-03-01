@@ -524,3 +524,125 @@ button[type="submit"]:hover {
 .stats-container .stat-box:nth-child(1) { animation-delay: 0.4s; }
 .stats-container .stat-box:nth-child(2) { animation-delay: 0.6s; }
 .stats-container .stat-box:nth-child(3) { animation-delay: 0.8s; }
+
+
+
+
+
+
+.route-options-container {
+    max-width: 100%;
+    margin: 20px auto;
+    padding: 10px;
+}
+
+.route-option {
+    background: white;
+    border-radius: 12px;
+    margin-bottom: 12px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.route-option:hover {
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    transform: translateY(-2px);
+}
+
+.route-option input[type="radio"]:checked + .route-option-label {
+    background: #f0f7ff;
+}
+
+.route-option-label {
+    display: block;
+    padding: 16px 20px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.route-option-label:hover {
+    background: #f8f8f8;
+}
+
+.route-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 12px;
+}
+
+.route-icon {
+    font-size: 24px;
+    margin-right: 12px;
+}
+
+.route-mode {
+    font-size: 18px;
+    font-weight: 600;
+    color: #333;
+}
+
+.route-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+}
+
+.stat {
+    display: flex;
+    flex-direction: column;
+}
+
+.stat-label {
+    font-size: 11px;
+    color: #666;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+}
+
+.stat-value {
+    font-size: 14px;
+    font-weight: 600;
+    color: #333;
+}
+
+.submit-container {
+    padding: 10px;
+    max-width: 100%;
+    margin: 0 auto;
+}
+
+.submit-btn {
+    width: 100%;
+    padding: 16px;
+    background: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.submit-btn:hover {
+    background: #45a049;
+}
+
+.submit-btn:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+}
+
+@media (max-width: 600px) {
+    .route-stats {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 12px;
+    }
+    
+    .stat {
+        padding: 8px;
+        background: #f9f9f9;
+        border-radius: 6px;
+    }
+}
