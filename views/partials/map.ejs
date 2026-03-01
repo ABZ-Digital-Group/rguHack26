@@ -648,6 +648,9 @@ function updateRouteOptions() {
         'BICYCLE': '🚴'
     };
 
+    if (routeData['TRANSIT']?.distance == routeData['WALK']?.distance) {
+        delete routeData['TRANSIT'];
+    }
 
     Object.keys(routeData).forEach(mode => {
         const route = routeData[mode];
