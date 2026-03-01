@@ -4,7 +4,7 @@ body {
   font-family: StockPlusFont, sans-serif;
   min-height: 100vh;
   background-color: #f8f9fa;
-  color: #212529;
+  color: #737b82;
   padding-bottom: 96px; /* space for bottom nav */
 }
 main {
@@ -289,6 +289,7 @@ main {
   width: 28px;
   height: 28px;
   transition: all 0.3s ease;
+  color: #737b82;
 }
 
 .nav-icon a {
