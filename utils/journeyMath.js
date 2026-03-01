@@ -54,7 +54,6 @@ export default function calculateJourneyStats(journeyInput){
                         
                         const distance = step.distanceMeters || 0;
                         const values = calculateValues(distance, mode);
-                        console.log(`Step ${index} - Mode: ${mode}, Distance: ${distance}m, CO2: ${values.co2Emissions}kg, Calories: ${values.caloriesBurned}kcal`);
                         co2Emissions += values.co2Emissions;
                         caloriesBurned += values.caloriesBurned;
                         
