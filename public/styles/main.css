@@ -66,18 +66,27 @@ body {
 .hamburger { order: 2; }
 .topHeader .logo { order: 1; }
 
+/* layout spans vertically and space evenly */
+.hamburger {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 2px; /* more padding for touch area */
+    width: 30px;
+    height: 30px;
+}
+
 .hamburger span {
     display: block;
-    width: 22px;
+    width: 24px;
     height: 2px;
     background: #222;
-    margin: 3px 0;
     transition: transform 0.25s ease, opacity 0.25s ease;
 }
 
-.hamburger.open span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
-.hamburger.open span:nth-child(2) { opacity: 0; }
-.hamburger.open span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+.hamburger.open span:nth-child(1) { transform: none; }
+.hamburger.open span:nth-child(2) { opacity: 1; }
+.hamburger.open span:nth-child(3) { transform: none; }
 
 /* Side menu */
 .sideMenu {
@@ -445,6 +454,37 @@ button[type="submit"] {
 }
 button[type="submit"]:hover {
     background-color: #0f9d58;
+}
+
+/* New 'X' close button inside the side menu */
+.side-menu-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 28px;
+    height: 28px;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+}
+
+.side-menu-close span {
+    display: block;
+    position: absolute;
+    top: 13px;
+    left: 4px;
+    width: 20px;
+    height: 2px;
+    background: #333;
+}
+
+.side-menu-close span:nth-child(1) {
+    transform: rotate(45deg);
+}
+
+.side-menu-close span:nth-child(2) {
+    transform: rotate(-45deg);
 }
 
 /* Animation for stat boxes */

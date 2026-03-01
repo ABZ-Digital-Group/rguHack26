@@ -39,7 +39,10 @@ router.get('/leaderboard', (req, res) => {
     if (!req.user) {
         return res.redirect('/login');
     }
-    return res.render('pages/leaderboard.ejs');
+    return res.render('pages/leaderboard.ejs',{
+        user: req.user
+    }
+    );
 });
 
 router.get('/planRoute', (req, res) => {

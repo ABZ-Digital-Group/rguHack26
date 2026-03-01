@@ -29,6 +29,7 @@ document.addEventListener('DOMContentLoaded', function() {
         toggleMenu();
     });
 
+
     // Close when clicking outside
     document.addEventListener('click', function(e) {
         if (!sideMenu.contains(e.target) && !hamburger.contains(e.target)) {
@@ -40,6 +41,16 @@ document.addEventListener('DOMContentLoaded', function() {
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape') closeMenu();
     });
+
+
+    // New close button inside side menu
+    const sideMenuCloseBtn = document.getElementById('sideMenuCloseBtn');
+    if (sideMenuCloseBtn) {
+        sideMenuCloseBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            closeMenu();
+        });
+    }
 });
 
 
