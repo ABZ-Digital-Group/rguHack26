@@ -24,6 +24,7 @@ function authenticateToken(req, res, next) {
     jwt.verify(token, jwtSecret, (err, user) => {
         if (err) return next();
         db.collection("users").findOne({ _id: new ObjectId(user.id) }).then(dbUser => {
+            res.clearCookie('token');
             if (!dbUser) return next();
         }).catch(err => {
             console.error('Error fetching user', err);
