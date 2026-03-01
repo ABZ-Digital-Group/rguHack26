@@ -446,14 +446,14 @@ button[type="submit"] {
     padding: 12px 30px;
     border-radius: 25px;
     border: none;
-    background-color: #34A853;
+    background-color: #c1d72d;
     color: white;
     font-size: 16px;
     cursor: pointer;
     transition: 0.2s ease;
 }
 button[type="submit"]:hover {
-    background-color: #0f9d58;
+    background-color: #91a031;
 }
 
 /* New 'X' close button inside the side menu */
@@ -615,7 +615,7 @@ button[type="submit"]:hover {
 .submit-btn {
     width: 100%;
     padding: 16px;
-    background: #4CAF50;
+    background: #c1d72d;
     color: white;
     border: none;
     border-radius: 12px;
@@ -626,7 +626,7 @@ button[type="submit"]:hover {
 }
 
 .submit-btn:hover {
-    background: #45a049;
+    background: #91a031;
 }
 
 .submit-btn:disabled {
