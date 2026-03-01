@@ -106,6 +106,20 @@ export async function calculateUserStats(userId) {
             stats.byMode[mode].totalTime = Math.round(stats.byMode[mode].totalTime);
         });
 
+        const totalTrips = stats.overall.tripCount;
+        if (totalTrips > 0) {
+            const greenTrips = stats.byMode.WALK.tripCount + stats.byMode.BICYCLE.tripCount;
+            const okayTrips = stats.byMode.BUS.tripCount + stats.byMode.TRAIN.tripCount + stats.byMode.TRANSIT.tripCount;
+            const badTrips = stats.byMode.DRIVE.tripCount;
+            
+            const greenPoints = (greenTrips * 100) + (okayTrips * 70) + (badTrips * 0);
+            const maxPoints = totalTrips * 100;
+            
+            stats.overall.greenScore = Math.round((greenPoints / maxPoints) * 100);
+        } else {
+            stats.overall.greenScore = 50;
+        }
+
         return stats;
 
     } catch (error) {

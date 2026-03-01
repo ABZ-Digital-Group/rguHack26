@@ -362,6 +362,348 @@ input[type="checkbox"]:checked + .image-btn {
   padding: 20px;
 }
 
+/* Green Score Tree Visualization */
+.green-score-container {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 20px;
+  padding: 30px 20px;
+  margin: 20px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+  text-align: center;
+  color: white;
+}
+
+.green-score-container h3 {
+  margin: 0 0 20px 0;
+  font-size: 24px;
+  font-weight: 600;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.tree-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 20px;
+}
+
+.tree {
+  position: relative;
+  width: 200px;
+  height: 250px;
+  margin: 0 auto;
+}
+
+.trunk {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 30px;
+  height: 80px;
+  background: linear-gradient(180deg, #5d4037 0%, #3e2723 100%);
+  border-radius: 5px;
+  box-shadow: inset -2px 0 5px rgba(0, 0, 0, 0.3);
+}
+
+.foliage {
+  position: absolute;
+  bottom: 60px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 150px;
+  height: 180px;
+}
+
+.leaf {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  background: #4caf50;
+  border-radius: 50% 0;
+  transform: rotate(45deg);
+  opacity: 0;
+  transition: opacity 0.5s ease, transform 0.5s ease;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Leaf positions */
+.leaf-1 { top: 0; left: 50%; transform: translate(-50%, 0) rotate(45deg); }
+.leaf-2 { top: 30px; left: 20%; transform: translate(-50%, 0) rotate(45deg); }
+.leaf-3 { top: 30px; right: 20%; transform: translate(50%, 0) rotate(45deg); }
+.leaf-4 { top: 60px; left: 10%; transform: translate(-50%, 0) rotate(45deg); }
+.leaf-5 { top: 60px; left: 50%; transform: translate(-50%, 0) rotate(45deg); }
+.leaf-6 { top: 60px; right: 10%; transform: translate(50%, 0) rotate(45deg); }
+.leaf-7 { top: 90px; left: 0; transform: translate(-50%, 0) rotate(45deg); }
+.leaf-8 { top: 90px; left: 35%; transform: translate(-50%, 0) rotate(45deg); }
+.leaf-9 { top: 90px; right: 35%; transform: translate(50%, 0) rotate(45deg); }
+.leaf-10 { top: 90px; right: 0; transform: translate(50%, 0) rotate(45deg); }
+.leaf-11 { top: 120px; left: 25%; transform: translate(-50%, 0) rotate(45deg); }
+.leaf-12 { top: 120px; right: 25%; transform: translate(50%, 0) rotate(45deg); }
+
+/* Tree states based on score */
+/* Score >= 80: All leaves vibrant green */
+.tree[data-score="100"] .leaf,
+.tree[data-score="99"] .leaf,
+.tree[data-score="98"] .leaf,
+.tree[data-score="97"] .leaf,
+.tree[data-score="96"] .leaf,
+.tree[data-score="95"] .leaf,
+.tree[data-score="94"] .leaf,
+.tree[data-score="93"] .leaf,
+.tree[data-score="92"] .leaf,
+.tree[data-score="91"] .leaf,
+.tree[data-score="90"] .leaf,
+.tree[data-score="89"] .leaf,
+.tree[data-score="88"] .leaf,
+.tree[data-score="87"] .leaf,
+.tree[data-score="86"] .leaf,
+.tree[data-score="85"] .leaf,
+.tree[data-score="84"] .leaf,
+.tree[data-score="83"] .leaf,
+.tree[data-score="82"] .leaf,
+.tree[data-score="81"] .leaf,
+.tree[data-score="80"] .leaf {
+  opacity: 1;
+  background: #4caf50;
+}
+
+/* Score 60-79: Most leaves, slightly yellow-green */
+.tree[data-score="79"] .leaf,
+.tree[data-score="78"] .leaf,
+.tree[data-score="77"] .leaf,
+.tree[data-score="76"] .leaf,
+.tree[data-score="75"] .leaf,
+.tree[data-score="74"] .leaf,
+.tree[data-score="73"] .leaf,
+.tree[data-score="72"] .leaf,
+.tree[data-score="71"] .leaf,
+.tree[data-score="70"] .leaf,
+.tree[data-score="69"] .leaf,
+.tree[data-score="68"] .leaf,
+.tree[data-score="67"] .leaf,
+.tree[data-score="66"] .leaf,
+.tree[data-score="65"] .leaf,
+.tree[data-score="64"] .leaf,
+.tree[data-score="63"] .leaf,
+.tree[data-score="62"] .leaf,
+.tree[data-score="61"] .leaf,
+.tree[data-score="60"] .leaf {
+  background: #8bc34a;
+}
+
+.tree[data-score="79"] .leaf:nth-child(n),
+.tree[data-score="78"] .leaf:nth-child(n),
+.tree[data-score="77"] .leaf:nth-child(n),
+.tree[data-score="76"] .leaf:nth-child(n),
+.tree[data-score="75"] .leaf:nth-child(n),
+.tree[data-score="74"] .leaf:nth-child(n),
+.tree[data-score="73"] .leaf:nth-child(n),
+.tree[data-score="72"] .leaf:nth-child(n),
+.tree[data-score="71"] .leaf:nth-child(n),
+.tree[data-score="70"] .leaf:nth-child(-n+10),
+.tree[data-score="69"] .leaf:nth-child(-n+10),
+.tree[data-score="68"] .leaf:nth-child(-n+10),
+.tree[data-score="67"] .leaf:nth-child(-n+10),
+.tree[data-score="66"] .leaf:nth-child(-n+10),
+.tree[data-score="65"] .leaf:nth-child(-n+10),
+.tree[data-score="64"] .leaf:nth-child(-n+9),
+.tree[data-score="63"] .leaf:nth-child(-n+9),
+.tree[data-score="62"] .leaf:nth-child(-n+9),
+.tree[data-score="61"] .leaf:nth-child(-n+9),
+.tree[data-score="60"] .leaf:nth-child(-n+8) {
+  opacity: 1;
+}
+
+/* Score 40-59: Some leaves, more yellow */
+.tree[data-score="59"] .leaf,
+.tree[data-score="58"] .leaf,
+.tree[data-score="57"] .leaf,
+.tree[data-score="56"] .leaf,
+.tree[data-score="55"] .leaf,
+.tree[data-score="54"] .leaf,
+.tree[data-score="53"] .leaf,
+.tree[data-score="52"] .leaf,
+.tree[data-score="51"] .leaf,
+.tree[data-score="50"] .leaf,
+.tree[data-score="49"] .leaf,
+.tree[data-score="48"] .leaf,
+.tree[data-score="47"] .leaf,
+.tree[data-score="46"] .leaf,
+.tree[data-score="45"] .leaf,
+.tree[data-score="44"] .leaf,
+.tree[data-score="43"] .leaf,
+.tree[data-score="42"] .leaf,
+.tree[data-score="41"] .leaf,
+.tree[data-score="40"] .leaf {
+  background: #cddc39;
+}
+
+.tree[data-score="59"] .leaf:nth-child(-n+7),
+.tree[data-score="58"] .leaf:nth-child(-n+7),
+.tree[data-score="57"] .leaf:nth-child(-n+7),
+.tree[data-score="56"] .leaf:nth-child(-n+6),
+.tree[data-score="55"] .leaf:nth-child(-n+6),
+.tree[data-score="54"] .leaf:nth-child(-n+6),
+.tree[data-score="53"] .leaf:nth-child(-n+5),
+.tree[data-score="52"] .leaf:nth-child(-n+5),
+.tree[data-score="51"] .leaf:nth-child(-n+5),
+.tree[data-score="50"] .leaf:nth-child(-n+5),
+.tree[data-score="49"] .leaf:nth-child(-n+5),
+.tree[data-score="48"] .leaf:nth-child(-n+4),
+.tree[data-score="47"] .leaf:nth-child(-n+4),
+.tree[data-score="46"] .leaf:nth-child(-n+4),
+.tree[data-score="45"] .leaf:nth-child(-n+4),
+.tree[data-score="44"] .leaf:nth-child(-n+4),
+.tree[data-score="43"] .leaf:nth-child(-n+3),
+.tree[data-score="42"] .leaf:nth-child(-n+3),
+.tree[data-score="41"] .leaf:nth-child(-n+3),
+.tree[data-score="40"] .leaf:nth-child(-n+3) {
+  opacity: 1;
+}
+
+/* Score 20-39: Few leaves, brown/orange */
+.tree[data-score="39"] .leaf,
+.tree[data-score="38"] .leaf,
+.tree[data-score="37"] .leaf,
+.tree[data-score="36"] .leaf,
+.tree[data-score="35"] .leaf,
+.tree[data-score="34"] .leaf,
+.tree[data-score="33"] .leaf,
+.tree[data-score="32"] .leaf,
+.tree[data-score="31"] .leaf,
+.tree[data-score="30"] .leaf,
+.tree[data-score="29"] .leaf,
+.tree[data-score="28"] .leaf,
+.tree[data-score="27"] .leaf,
+.tree[data-score="26"] .leaf,
+.tree[data-score="25"] .leaf,
+.tree[data-score="24"] .leaf,
+.tree[data-score="23"] .leaf,
+.tree[data-score="22"] .leaf,
+.tree[data-score="21"] .leaf,
+.tree[data-score="20"] .leaf {
+  background: #ff9800;
+}
+
+.tree[data-score="39"] .leaf:nth-child(-n+3),
+.tree[data-score="38"] .leaf:nth-child(-n+3),
+.tree[data-score="37"] .leaf:nth-child(-n+2),
+.tree[data-score="36"] .leaf:nth-child(-n+2),
+.tree[data-score="35"] .leaf:nth-child(-n+2),
+.tree[data-score="34"] .leaf:nth-child(-n+2),
+.tree[data-score="33"] .leaf:nth-child(-n+2),
+.tree[data-score="32"] .leaf:nth-child(-n+2),
+.tree[data-score="31"] .leaf:nth-child(-n+2),
+.tree[data-score="30"] .leaf:nth-child(-n+2),
+.tree[data-score="29"] .leaf:nth-child(-n+2),
+.tree[data-score="28"] .leaf:nth-child(-n+2),
+.tree[data-score="27"] .leaf:nth-child(-n+2),
+.tree[data-score="26"] .leaf:nth-child(-n+1),
+.tree[data-score="25"] .leaf:nth-child(-n+1),
+.tree[data-score="24"] .leaf:nth-child(-n+1),
+.tree[data-score="23"] .leaf:nth-child(-n+1),
+.tree[data-score="22"] .leaf:nth-child(-n+1),
+.tree[data-score="21"] .leaf:nth-child(-n+1),
+.tree[data-score="20"] .leaf:nth-child(-n+1) {
+  opacity: 1;
+}
+
+/* Score 0-19: Almost no leaves, dead brown */
+.tree[data-score="19"] .leaf,
+.tree[data-score="18"] .leaf,
+.tree[data-score="17"] .leaf,
+.tree[data-score="16"] .leaf,
+.tree[data-score="15"] .leaf,
+.tree[data-score="14"] .leaf,
+.tree[data-score="13"] .leaf,
+.tree[data-score="12"] .leaf,
+.tree[data-score="11"] .leaf,
+.tree[data-score="10"] .leaf,
+.tree[data-score="9"] .leaf,
+.tree[data-score="8"] .leaf,
+.tree[data-score="7"] .leaf,
+.tree[data-score="6"] .leaf,
+.tree[data-score="5"] .leaf,
+.tree[data-score="4"] .leaf,
+.tree[data-score="3"] .leaf,
+.tree[data-score="2"] .leaf,
+.tree[data-score="1"] .leaf,
+.tree[data-score="0"] .leaf {
+  background: #795548;
+}
+
+.tree[data-score="19"] .leaf:nth-child(-n+1),
+.tree[data-score="18"] .leaf:nth-child(-n+1),
+.tree[data-score="17"] .leaf:nth-child(-n+1),
+.tree[data-score="16"] .leaf:nth-child(-n+1),
+.tree[data-score="15"] .leaf:nth-child(-n+1),
+.tree[data-score="14"] .leaf:nth-child(-n+1),
+.tree[data-score="13"] .leaf:nth-child(-n+1),
+.tree[data-score="12"] .leaf:nth-child(-n+1),
+.tree[data-score="11"] .leaf:nth-child(-n+1),
+.tree[data-score="10"] .leaf:nth-child(-n+1) {
+  opacity: 1;
+}
+
+/* Score display */
+.score-display {
+  display: flex;
+  align-items: baseline;
+  justify-content: center;
+  gap: 5px;
+}
+
+.score-number {
+  font-size: 48px;
+  font-weight: 700;
+  color: white;
+  text-shadow: 3px 3px 6px rgba(0, 0, 0, 0.3);
+}
+
+.score-label {
+  font-size: 24px;
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 500;
+}
+
+.score-description {
+  margin: 15px 0 0 0;
+  font-size: 16px;
+  color: white;
+  font-weight: 500;
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+/* Leaf animation on load */
+@keyframes leafGrow {
+  from {
+    transform: scale(0) rotate(45deg);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1) rotate(45deg);
+    opacity: 1;
+  }
+}
+
+.leaf {
+  animation: leafGrow 0.6s ease-out forwards;
+}
+
+.leaf:nth-child(1) { animation-delay: 0.1s; }
+.leaf:nth-child(2) { animation-delay: 0.2s; }
+.leaf:nth-child(3) { animation-delay: 0.3s; }
+.leaf:nth-child(4) { animation-delay: 0.4s; }
+.leaf:nth-child(5) { animation-delay: 0.5s; }
+.leaf:nth-child(6) { animation-delay: 0.6s; }
+.leaf:nth-child(7) { animation-delay: 0.7s; }
+.leaf:nth-child(8) { animation-delay: 0.8s; }
+.leaf:nth-child(9) { animation-delay: 0.9s; }
+.leaf:nth-child(10) { animation-delay: 1.0s; }
+.leaf:nth-child(11) { animation-delay: 1.1s; }
+.leaf:nth-child(12) { animation-delay: 1.2s; }
+
 .stat-box {
   background: white;
   border-radius: 12px;

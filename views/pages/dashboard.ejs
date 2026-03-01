@@ -14,6 +14,48 @@
     <div class="dashboard">
       <h2 class="animate-fade-in">Welcome,<br><%= user.username %></h2>
 
+      <!-- Green Score Tree Visualization -->
+      <div class="green-score-container">
+        <h3>Your Green Score</h3>
+        <div class="tree-container">
+          <div class="tree" data-score="<%= stats && stats.overall ? stats.overall.greenScore : 50 %>">
+            <!-- Tree trunk -->
+            <div class="trunk"></div>
+            <!-- Tree foliage -->
+            <div class="foliage">
+              <div class="leaf leaf-1"></div>
+              <div class="leaf leaf-2"></div>
+              <div class="leaf leaf-3"></div>
+              <div class="leaf leaf-4"></div>
+              <div class="leaf leaf-5"></div>
+              <div class="leaf leaf-6"></div>
+              <div class="leaf leaf-7"></div>
+              <div class="leaf leaf-8"></div>
+              <div class="leaf leaf-9"></div>
+              <div class="leaf leaf-10"></div>
+              <div class="leaf leaf-11"></div>
+              <div class="leaf leaf-12"></div>
+            </div>
+          </div>
+          <div class="score-display">
+            <span class="score-number"><%= stats && stats.overall ? stats.overall.greenScore : 50 %></span>
+            <span class="score-label">/100</span>
+          </div>
+        </div>
+        <p class="score-description">
+          <% const score = stats && stats.overall ? stats.overall.greenScore : 50; %>
+          <% if (score >= 80) { %>
+            🌟 Excellent! You're making a huge environmental impact!
+          <% } else if (score >= 60) { %>
+            🌱 Great job! Keep choosing green transportation!
+          <% } else if (score >= 40) { %>
+            🌿 Good start! Try walking or cycling more often.
+          <% } else { %>
+            🌱 Every journey counts! Start small with green choices.
+          <% } %>
+        </p>
+      </div>
+
       <div class="stats-container">
         <div class="stat-box">
           <h3>CO2 Saved</h3>
