@@ -191,6 +191,8 @@ let autocompleteTimeout = null;
 let routePolylines = []; // Store route polylines
 let routeData = {}; // Store route data for display
 let switchPointMarkers = []; // Store switch point markers
+let weatherData = null; // Store current weather data
+let modeSuggestions = {};
 
 function showError(message) {
     const errorDiv = document.getElementById('error-message');
@@ -394,6 +396,9 @@ async function updateRoutes() {
             }
         });
 
+        // Fetch weather data and update route options
+        await fetchWeatherData(startPos);
+        
         // Update the route options display
         updateRouteOptions();
         
@@ -628,6 +633,45 @@ function geocodeLatLng(latLng, inputId) {
     });
 }
 
+async function fetchWeatherData(position) {
+    try {
+        const lat = position.lat();
+        const lon = position.lng();
+        
+        // Fetch personalized suggestions from server
+        const response = await fetch('/api/weather/suggestions', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                lat: lat,
+                lon: lon,
+                routeData: routeData
+            })
+        });
+        
+        if (!response.ok) {
+            console.warn('Failed to fetch suggestions');
+            modeSuggestions = {};
+            weatherData = { isRaining: false };
+            return;
+        }
+        
+        const data = await response.json();
+        modeSuggestions = data.suggestions || {};
+        weatherData = { 
+            isRaining: data.isRaining,
+            description: data.weatherDescription 
+        };
+        console.log('Suggestions:', modeSuggestions);
+    } catch (error) {
+        console.error('Error fetching suggestions:', error);
+        modeSuggestions = {};
+        weatherData = { isRaining: false };
+    }
+}
+
 function updateRouteOptions() {
     const container = document.getElementById('route-options');
     if (!container) return;
@@ -656,6 +700,9 @@ function updateRouteOptions() {
         const route = routeData[mode];
         const label = modeLabels[mode] || mode;
         const icon = modeIcons[mode] || '🚶';
+        const suggestion = modeSuggestions[mode];
+        const isSuggested = !!suggestion;
+        const suggestionReason = suggestion?.reason || '';
 
         const row = document.createElement('div');
         row.className = 'route-option';
@@ -667,7 +714,9 @@ function updateRouteOptions() {
                 <div class="route-header">
                     <span class="route-icon">${icon}</span>
                     <span class="route-mode">${label}</span>
+                    ${isSuggested ? '<span class="suggested-badge">✨ Suggested</span>' : ''}
                 </div>
+                ${isSuggested && suggestionReason ? `<div class="suggestion-reason">${suggestionReason}</div>` : ''}
                 <div class="route-stats">
                     <div class="stat">
                         <span class="stat-label">Distance</span>
@@ -692,6 +741,8 @@ function updateRouteOptions() {
         container.appendChild(row);
     });
 }
+
+
 
 function displaySwitchPoints() {
     // Clear existing markers
